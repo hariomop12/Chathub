@@ -11,18 +11,20 @@ const Home = () => {
       <div style={styles.userButton}>
         <UserButton afterSignOutUrl="/" />
       </div>
-      
+
       <div style={styles.container}>
         <div style={styles.iconContainer}>
           <MessageCircle size={64} style={styles.icon} />
         </div>
-        
-        <h1 style={styles.title}>Welcome back, {user?.firstName || "Friend"}!</h1>
-        
+
+        <h1 style={styles.title}>
+          Welcome back, {user?.firstName || "Friend"}!
+        </h1>
+
         <p style={styles.subtitle}>
           Jump into your conversations and stay connected with your friends
         </p>
-        
+
         <button
           onClick={() => navigate("/chat")}
           style={styles.button}

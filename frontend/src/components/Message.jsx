@@ -76,9 +76,7 @@ const Message = ({ message, isOwn }) => {
           maxWidth: "72%",
           padding: "12px 16px",
           borderRadius: 18,
-          background: isOwn
-            ? "#3b82f6"
-            : "#e5e7eb",
+          background: isOwn ? "#3b82f6" : "#e5e7eb",
           color: isOwn ? "#ffffff" : "#1a1a1a",
           borderBottomRightRadius: isOwn ? 6 : 18,
           borderBottomLeftRadius: isOwn ? 18 : 6,
@@ -87,7 +85,11 @@ const Message = ({ message, isOwn }) => {
       >
         {message.file_url && message.file_type?.startsWith("image/") ? (
           <div>
-            <a href={message.file_url} target="_blank" rel="noopener noreferrer">
+            <a
+              href={message.file_url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img
                 src={message.file_url}
                 alt={message.file_name || "Image"}
@@ -100,8 +102,15 @@ const Message = ({ message, isOwn }) => {
               />
             </a>
             {message.file_name && (
-              <div style={{ fontSize: 12, color: isOwn ? "#dbeafe" : "#64748b", marginTop: 4 }}>
-                {message.file_name} {message.file_size ? `(${formatSize(message.file_size)})` : ""}
+              <div
+                style={{
+                  fontSize: 12,
+                  color: isOwn ? "#dbeafe" : "#64748b",
+                  marginTop: 4,
+                }}
+              >
+                {message.file_name}{" "}
+                {message.file_size ? `(${formatSize(message.file_size)})` : ""}
               </div>
             )}
           </div>

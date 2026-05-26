@@ -58,14 +58,16 @@ const Chat = () => {
 
     socket.on("user-typing", ({ chatId, userId, username }) => {
       setTypingUsers((prev) => {
-        if (userId === userIdRef.current || chatId !== activeChatIdRef.current) return prev;
+        if (userId === userIdRef.current || chatId !== activeChatIdRef.current)
+          return prev;
         return { ...prev, [userId]: username || "Someone" };
       });
     });
 
     socket.on("user-stop-typing", ({ chatId, userId }) => {
       setTypingUsers((prev) => {
-        if (userId === userIdRef.current || chatId !== activeChatIdRef.current) return prev;
+        if (userId === userIdRef.current || chatId !== activeChatIdRef.current)
+          return prev;
         const next = { ...prev };
         delete next[userId];
         return next;
@@ -130,27 +132,32 @@ const Chat = () => {
     });
   };
 
-  const handleTyping = useCallback((isTyping) => {
-    if (!activeChat || !user) return;
+  const handleTyping = useCallback(
+    (isTyping) => {
+      if (!activeChat || !user) return;
 
-    const socket = getSocket();
-    if (!socket) return;
+      const socket = getSocket();
+      if (!socket) return;
 
-    socket.emit(isTyping ? "typing" : "stop-typing", {
-      chatId: activeChat.id,
-      userId: user.id,
-      username: getDisplayName(user),
-    });
-  }, [activeChat, user]);
+      socket.emit(isTyping ? "typing" : "stop-typing", {
+        chatId: activeChat.id,
+        userId: user.id,
+        username: getDisplayName(user),
+      });
+    },
+    [activeChat, user],
+  );
 
   return (
-    <div style={{
-      display: "flex",
-      height: "100vh",
-      background: "#f8fafc",
-      color: "#1a1a1a",
-      overflow: "hidden",
-    }}>
+    <div
+      style={{
+        display: "flex",
+        height: "100vh",
+        background: "#f8fafc",
+        color: "#1a1a1a",
+        overflow: "hidden",
+      }}
+    >
       <div style={{ position: "absolute", top: 16, right: 16, zIndex: 10 }}>
         <UserButton afterSignOutUrl="/" />
       </div>

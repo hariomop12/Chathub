@@ -90,7 +90,7 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
       const result = await api.uploadFile(file, (progress) => {
         progressTargetRef.current = Math.max(
           progressTargetRef.current,
-          Math.min(progress, 95)
+          Math.min(progress, 95),
         );
       });
 
@@ -190,9 +190,20 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
         }}
       >
         {chat.other_avatar && (
-          <img src={chat.other_avatar} alt="" style={{ width: 40, height: 40, borderRadius: "50%", border: "2px solid #e5e7eb" }} />
+          <img
+            src={chat.other_avatar}
+            alt=""
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              border: "2px solid #e5e7eb",
+            }}
+          />
         )}
-        <strong style={{ color: "#1a1a1a", fontSize: "15px" }}>{chat.other_username || chat.name || "Direct Chat"}</strong>
+        <strong style={{ color: "#1a1a1a", fontSize: "15px" }}>
+          {chat.other_username || chat.name || "Direct Chat"}
+        </strong>
       </div>
 
       <div
@@ -329,7 +340,9 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
             }}
           >
             <Loader size={16} className="animate-spin" color="#3b82f6" />
-            <span style={{ fontSize: 13, color: "#6b7280" }}>{uploadProgress}%</span>
+            <span style={{ fontSize: 13, color: "#6b7280" }}>
+              {uploadProgress}%
+            </span>
           </div>
         ) : null}
 

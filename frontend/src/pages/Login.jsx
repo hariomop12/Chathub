@@ -8,7 +8,7 @@ const Login = () => {
           <h1 style={styles.title}>ChatHub</h1>
           <p style={styles.subtitle}>Connect instantly. Chat seamlessly.</p>
         </div>
-        
+
         <div style={styles.formContainer}>
           <SignIn
             appearance={{
@@ -25,7 +25,8 @@ const Login = () => {
                 card: {
                   background: "#ffffff",
                   border: "1px solid #e5e7eb",
-                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.06)",
+                  boxShadow:
+                    "0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.06)",
                   borderRadius: "12px",
                   color: "#1a1a1a",
                 },

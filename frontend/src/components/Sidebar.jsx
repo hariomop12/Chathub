@@ -251,9 +251,7 @@ const Sidebar = ({
                         margin: "4px 0 0",
                         fontSize: 12,
                         color:
-                          activeChat?.id === chat.id
-                          ? "#4f46e5"
-                          : "#64748b",
+                          activeChat?.id === chat.id ? "#4f46e5" : "#64748b",
 
                         overflow: "hidden",
                         whiteSpace: "nowrap",
@@ -292,7 +290,7 @@ const Sidebar = ({
       </div>
 
       {/* Bottom User Section */}
-       <div
+      <div
         style={{
           padding: "14px 18px",
           borderTop: "1px solid #e5e7eb",
