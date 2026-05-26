@@ -21,6 +21,9 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
   const [fileError, setFileError] = useState("");
   const bottomRef = useRef(null);
   const fileInputRef = useRef(null);
+  const displayedProgressRef = useRef(0);
+  const progressTargetRef = useRef(0);
+  const progressTimerRef = useRef(null);
   const typingTimeoutRef = useRef(null);
   const onTypingRef = useRef(onTyping);
 
@@ -66,13 +69,57 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
 
     setUploading(true);
     setUploadProgress(0);
+    displayedProgressRef.current = 0;
+    progressTargetRef.current = 8;
+
+    progressTimerRef.current = setInterval(() => {
+      setUploadProgress((current) => {
+        const target = progressTargetRef.current;
+        if (current >= target) {
+          displayedProgressRef.current = current;
+          return current;
+        }
+
+        const next = Math.min(current + 2, target);
+        displayedProgressRef.current = next;
+        return next;
+      });
+    }, 120);
 
     try {
-      const result = await api.uploadFile(file, setUploadProgress);
+      const result = await api.uploadFile(file, (progress) => {
+        progressTargetRef.current = Math.max(
+          progressTargetRef.current,
+          Math.min(progress, 95)
+        );
+      });
+
+      if (progressTimerRef.current) {
+        clearInterval(progressTimerRef.current);
+        progressTimerRef.current = null;
+      }
+
+      await new Promise((resolve) => {
+        const timer = setInterval(() => {
+          const next = Math.min(displayedProgressRef.current + 5, 100);
+          displayedProgressRef.current = next;
+          setUploadProgress(next);
+
+          if (next === 100) {
+            clearInterval(timer);
+            resolve();
+          }
+        }, 45);
+      });
+
       setFileInfo(result);
     } catch (err) {
       setFileError(err.message || "Upload failed");
     } finally {
+      if (progressTimerRef.current) {
+        clearInterval(progressTimerRef.current);
+        progressTimerRef.current = null;
+      }
       setUploading(false);
       e.target.value = "";
     }
@@ -88,6 +135,9 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
     return () => {
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
+      }
+      if (progressTimerRef.current) {
+        clearInterval(progressTimerRef.current);
       }
       onTypingRef.current(false);
     };
@@ -109,7 +159,10 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          color: "#555",
+          color: "#9ca3af",
+          fontSize: "16px",
+          fontWeight: "500",
+          background: "#f8fafc",
         }}
       >
         Select a chat to start messaging
@@ -127,18 +180,19 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
     >
       <div
         style={{
-          padding: "15px 20px",
-          borderBottom: "1px solid #0f3460",
-          background: "#16213e",
+          padding: "16px 20px",
+          borderBottom: "1px solid #e5e7eb",
+          background: "#ffffff",
           display: "flex",
           alignItems: "center",
-          gap: 10,
+          gap: 12,
+          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
         }}
       >
         {chat.other_avatar && (
-          <img src={chat.other_avatar} alt="" style={{ width: 36, height: 36, borderRadius: "50%" }} />
+          <img src={chat.other_avatar} alt="" style={{ width: 40, height: 40, borderRadius: "50%", border: "2px solid #e5e7eb" }} />
         )}
-        <strong>{chat.other_username || chat.name || "Direct Chat"}</strong>
+        <strong style={{ color: "#1a1a1a", fontSize: "15px" }}>{chat.other_username || chat.name || "Direct Chat"}</strong>
       </div>
 
       <div
@@ -146,6 +200,7 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
           flex: 1,
           overflowY: "auto",
           padding: 20,
+          background: "#f8fafc",
         }}
       >
         {messages.map((msg) => (
@@ -173,11 +228,12 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
       <form
         onSubmit={handleSubmit}
         style={{
-          padding: "15px 20px",
-          borderTop: "1px solid #0f3460",
+          padding: "16px 20px",
+          borderTop: "1px solid #e5e7eb",
           display: "flex",
           gap: 10,
-          background: "#16213e",
+          background: "#ffffff",
+          boxShadow: "0 -1px 3px rgba(0, 0, 0, 0.05)",
         }}
       >
         <input
@@ -189,10 +245,20 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
             flex: 1,
             padding: "10px 15px",
             borderRadius: 8,
-            border: "1px solid #0f3460",
-            background: "#1a1a2e",
-            color: "#fff",
+            border: "1px solid #e5e7eb",
+            background: "#f9fafb",
+            color: "#1a1a1a",
             outline: "none",
+            fontSize: "14px",
+            transition: "border-color 0.2s",
+          }}
+          onFocus={(e) => {
+            e.target.style.borderColor = "#3b82f6";
+            e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
+          }}
+          onBlurCapture={(e) => {
+            e.target.style.borderColor = "#e5e7eb";
+            e.target.style.boxShadow = "none";
           }}
         />
         <input
@@ -209,21 +275,21 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
               alignItems: "center",
               gap: 8,
               padding: "6px 12px",
-              background: "#1e293b",
+              background: "#f3f4f6",
               borderRadius: 8,
-              border: "1px solid #334155",
+              border: "1px solid #e5e7eb",
               maxWidth: 200,
             }}
           >
             {fileInfo.type?.startsWith("image/") ? (
-              <Image size={16} color="#60a5fa" />
+              <Image size={16} color="#3b82f6" />
             ) : (
-              <FileText size={16} color="#60a5fa" />
+              <FileText size={16} color="#3b82f6" />
             )}
             <span
               style={{
                 fontSize: 13,
-                color: "#cbd5e1",
+                color: "#374151",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
@@ -232,7 +298,7 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
             >
               {fileInfo.name}
             </span>
-            <span style={{ fontSize: 11, color: "#64748b", flexShrink: 0 }}>
+            <span style={{ fontSize: 11, color: "#9ca3af", flexShrink: 0 }}>
               {formatSize(fileInfo.size)}
             </span>
             <button
@@ -241,7 +307,7 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
               style={{
                 background: "none",
                 border: "none",
-                color: "#94a3b8",
+                color: "#6b7280",
                 cursor: "pointer",
                 padding: 2,
                 display: "flex",
@@ -257,13 +323,13 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
               alignItems: "center",
               gap: 6,
               padding: "6px 12px",
-              background: "#1e293b",
+              background: "#f3f4f6",
               borderRadius: 8,
-              border: "1px solid #334155",
+              border: "1px solid #e5e7eb",
             }}
           >
-            <Loader size={16} className="animate-spin" color="#60a5fa" />
-            <span style={{ fontSize: 13, color: "#94a3b8" }}>{uploadProgress}%</span>
+            <Loader size={16} className="animate-spin" color="#3b82f6" />
+            <span style={{ fontSize: 13, color: "#6b7280" }}>{uploadProgress}%</span>
           </div>
         ) : null}
 
@@ -276,28 +342,52 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
           style={{
             width: 42,
             height: 42,
-            border: "1px solid #0f3460",
+            border: "1px solid #e5e7eb",
             borderRadius: 8,
-            background: uploading ? "#1a1a2e" : "#1a1a2e",
-            color: uploading ? "#475569" : "#cbd5e1",
+            background: uploading ? "#f3f4f6" : "#f9fafb",
+            color: uploading ? "#9ca3af" : "#6b7280",
             cursor: uploading ? "not-allowed" : "pointer",
             opacity: uploading ? 0.5 : 1,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            transition: "0.2s",
+          }}
+          onMouseEnter={(e) => {
+            if (!uploading) {
+              e.currentTarget.style.background = "#f3f4f6";
+              e.currentTarget.style.color = "#1a1a1a";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!uploading) {
+              e.currentTarget.style.background = "#f9fafb";
+              e.currentTarget.style.color = "#6b7280";
+            }
           }}
         >
-          {uploading ? <Loader size={18} className="animate-spin" /> : <Paperclip size={18} strokeWidth={2.2} />}
+          <Paperclip size={18} strokeWidth={2.2} />
         </button>
         <button
           type="submit"
           style={{
             padding: "10px 20px",
-            background: "#0f3460",
+            background: "#3b82f6",
             color: "#fff",
             border: "none",
             borderRadius: 8,
             cursor: "pointer",
+            fontWeight: "600",
+            fontSize: "14px",
+            transition: "all 0.2s",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = "#2563eb";
+            e.target.style.transform = "translateY(-1px)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = "#3b82f6";
+            e.target.style.transform = "translateY(0)";
           }}
         >
           Send

@@ -147,10 +147,11 @@ const Chat = () => {
     <div style={{
       display: "flex",
       height: "100vh",
-      background: "#1a1a2e",
-      color: "#fff",
+      background: "#f8fafc",
+      color: "#1a1a1a",
+      overflow: "hidden",
     }}>
-      <div style={{ position: "absolute", top: 10, right: 10, zIndex: 10 }}>
+      <div style={{ position: "absolute", top: 16, right: 16, zIndex: 10 }}>
         <UserButton afterSignOutUrl="/" />
       </div>
       <Sidebar

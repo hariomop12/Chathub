@@ -20,13 +20,13 @@ const FileAttachment = ({ url, name, type, size }) => {
         padding: "10px 14px",
         marginTop: 8,
         borderRadius: 10,
-        background: "rgba(0,0,0,0.2)",
+        background: "#e0e7ff",
         textDecoration: "none",
-        color: "#f8fafc",
-        border: "1px solid rgba(255,255,255,0.08)",
+        color: "#1e40af",
+        border: "1px solid #c7d2fe",
       }}
     >
-      <FileText size={22} color="#60a5fa" />
+      <FileText size={22} color="#3b82f6" />
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
@@ -39,11 +39,11 @@ const FileAttachment = ({ url, name, type, size }) => {
         >
           {name}
         </div>
-        <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 2 }}>
+        <div style={{ fontSize: 11, color: "#64748b", marginTop: 2 }}>
           {formatSize(size)}
         </div>
       </div>
-      <Download size={16} color="#94a3b8" />
+      <Download size={16} color="#64748b" />
     </a>
   );
 };
@@ -63,11 +63,11 @@ const Message = ({ message, isOwn }) => {
         src={message.avatar}
         alt=""
         style={{
-          width: 34,
-          height: 34,
+          width: 36,
+          height: 36,
           borderRadius: "50%",
           objectFit: "cover",
-          border: "2px solid #2b2f3a",
+          border: "2px solid #e5e7eb",
         }}
       />
 
@@ -77,15 +77,12 @@ const Message = ({ message, isOwn }) => {
           padding: "12px 16px",
           borderRadius: 18,
           background: isOwn
-            ? "linear-gradient(135deg, #3b82f6, #2563eb)"
-            : "#1e293b",
-          color: "#f8fafc",
+            ? "#3b82f6"
+            : "#e5e7eb",
+          color: isOwn ? "#ffffff" : "#1a1a1a",
           borderBottomRightRadius: isOwn ? 6 : 18,
           borderBottomLeftRadius: isOwn ? 18 : 6,
-          boxShadow: "0 4px 10px rgba(0,0,0,0.18)",
-          border: isOwn
-            ? "1px solid rgba(255,255,255,0.08)"
-            : "1px solid #334155",
+          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
         }}
       >
         {message.file_url && message.file_type?.startsWith("image/") ? (
@@ -103,7 +100,7 @@ const Message = ({ message, isOwn }) => {
               />
             </a>
             {message.file_name && (
-              <div style={{ fontSize: 12, color: "#cbd5e1", marginTop: 4 }}>
+              <div style={{ fontSize: 12, color: isOwn ? "#dbeafe" : "#64748b", marginTop: 4 }}>
                 {message.file_name} {message.file_size ? `(${formatSize(message.file_size)})` : ""}
               </div>
             )}

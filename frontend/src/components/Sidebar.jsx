@@ -41,18 +41,18 @@ const Sidebar = ({
     <div
       style={{
         width: 320,
-        background: "#0f172a",
+        background: "#ffffff",
         display: "flex",
         flexDirection: "column",
-        borderRight: "1px solid #1e293b",
-        color: "#f8fafc",
+        borderRight: "1px solid #e5e7eb",
+        color: "#1a1a1a",
       }}
     >
       {/* Header */}
       <div
         style={{
           padding: "20px",
-          borderBottom: "1px solid #1e293b",
+          borderBottom: "1px solid #e5e7eb",
         }}
       >
         <h2
@@ -60,6 +60,7 @@ const Sidebar = ({
             margin: 0,
             fontSize: 20,
             fontWeight: 700,
+            color: "#1a1a1a",
           }}
         >
           Messages
@@ -72,7 +73,7 @@ const Sidebar = ({
           padding: "14px 20px 10px",
           fontSize: 13,
           fontWeight: 600,
-          color: "#94a3b8",
+          color: "#64748b",
         }}
       >
         ALL USERS
@@ -97,12 +98,12 @@ const Sidebar = ({
                 display: "flex",
                 alignItems: "center",
                 gap: 12,
-                borderRadius: 14,
+                borderRadius: 10,
                 marginBottom: 6,
                 transition: "0.2s",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#1e293b";
+                e.currentTarget.style.background = "#f3f4f6";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = "transparent";
@@ -116,7 +117,7 @@ const Sidebar = ({
                   height: 42,
                   borderRadius: "50%",
                   objectFit: "cover",
-                  border: "2px solid #334155",
+                  border: "2px solid #e5e7eb",
                 }}
               />
 
@@ -133,7 +134,7 @@ const Sidebar = ({
                 <div
                   style={{
                     fontSize: 12,
-                    color: "#94a3b8",
+                    color: "#64748b",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                   }}
@@ -151,7 +152,7 @@ const Sidebar = ({
           padding: "18px 20px 10px",
           fontSize: 13,
           fontWeight: 600,
-          color: "#94a3b8",
+          color: "#64748b",
         }}
       >
         YOUR CHATS
@@ -168,7 +169,7 @@ const Sidebar = ({
           <p
             style={{
               padding: 20,
-              color: "#64748b",
+              color: "#94a3b8",
               textAlign: "center",
               fontSize: 14,
             }}
@@ -187,17 +188,17 @@ const Sidebar = ({
                 alignItems: "center",
                 justifyContent: "space-between",
                 gap: 12,
-                borderRadius: 16,
+                borderRadius: 10,
                 marginBottom: 8,
 
                 background:
-                  activeChat?.id === chat.id ? "#1d4ed8" : "transparent",
+                  activeChat?.id === chat.id ? "#e0e7ff" : "transparent",
 
                 transition: "0.2s",
               }}
               onMouseEnter={(e) => {
                 if (activeChat?.id !== chat.id) {
-                  e.currentTarget.style.background = "#1e293b";
+                  e.currentTarget.style.background = "#f3f4f6";
                 }
               }}
               onMouseLeave={(e) => {
@@ -224,7 +225,7 @@ const Sidebar = ({
                       height: 44,
                       borderRadius: "50%",
                       objectFit: "cover",
-                      border: "2px solid rgba(255,255,255,0.08)",
+                      border: "2px solid #e5e7eb",
                     }}
                   />
                 )}
@@ -251,8 +252,8 @@ const Sidebar = ({
                         fontSize: 12,
                         color:
                           activeChat?.id === chat.id
-                            ? "rgba(255,255,255,0.8)"
-                            : "#94a3b8",
+                          ? "#4f46e5"
+                          : "#64748b",
 
                         overflow: "hidden",
                         whiteSpace: "nowrap",
@@ -273,10 +274,10 @@ const Sidebar = ({
                   style={{
                     width: 32,
                     height: 32,
-                    borderRadius: 10,
+                    borderRadius: 8,
                     border: "none",
-                    background: "rgba(239,68,68,0.15)",
-                    color: "#f87171",
+                    background: "#fee2e2",
+                    color: "#dc2626",
                     cursor: "pointer",
                     fontSize: 16,
                     transition: "0.2s",
@@ -294,11 +295,11 @@ const Sidebar = ({
        <div
         style={{
           padding: "14px 18px",
-          borderTop: "1px solid #1e293b",
+          borderTop: "1px solid #e5e7eb",
           display: "flex",
           alignItems: "center",
           gap: 12,
-          background: "#111827",
+          background: "#fafbfc",
         }}
       >
         <img
@@ -325,7 +326,7 @@ const Sidebar = ({
           <div
             style={{
               fontSize: 12,
-              color: "#94a3b8",
+              color: "#64748b",
             }}
           >
             Online
@@ -349,9 +350,9 @@ const Sidebar = ({
               width: 36,
               height: 36,
               border: "none",
-              borderRadius: 10,
-              background: "#1e293b",
-              color: "#cbd5e1",
+              borderRadius: 8,
+              background: "#e5e7eb",
+              color: "#64748b",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
@@ -359,12 +360,12 @@ const Sidebar = ({
               transition: "0.2s",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#334155";
-              e.currentTarget.style.color = "#f8fafc";
+              e.currentTarget.style.background = "#d1d5db";
+              e.currentTarget.style.color = "#374151";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = "#1e293b";
-              e.currentTarget.style.color = "#cbd5e1";
+              e.currentTarget.style.background = "#e5e7eb";
+              e.currentTarget.style.color = "#64748b";
             }}
           >
             <Settings size={18} strokeWidth={2.2} />
