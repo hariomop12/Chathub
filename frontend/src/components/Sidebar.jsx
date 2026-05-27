@@ -625,6 +625,18 @@ const Sidebar = ({
 
               <label
                 style={{
+                  paddingTop: 14, 
+                  display: "block",
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: "#334155",
+                }}
+              >
+                Change profile picture
+              </label>
+
+              <label
+                style={{
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
