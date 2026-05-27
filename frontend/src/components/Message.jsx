@@ -256,6 +256,7 @@ const Message = ({ message, isOwn }) => {
 
         {/* MESSAGE BOX */}
         <div
+          className="message-bubble"
           style={{
             maxWidth: "72%",
             padding: "12px 16px",

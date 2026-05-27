@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useUser } from "@clerk/clerk-react";
-import { Paperclip, X, FileText, Image, Loader } from "lucide-react";
+import { ArrowLeft, Paperclip, X, FileText, Image, Loader, Phone, Video } from "lucide-react";
 import { api } from "../api/api";
 import Message from "./Message";
 
@@ -12,7 +12,16 @@ const formatSize = (bytes) => {
   return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 };
 
-const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
+const ChatBox = ({
+  chat,
+  messages,
+  onSendMessage,
+  onTyping,
+  typingUsers,
+  onBack,
+  onAudioCall,
+  onVideoCall,
+}) => {
   const { user } = useUser();
   const [input, setInput] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -154,6 +163,7 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
   if (!chat) {
     return (
       <div
+        className="chat-empty-state"
         style={{
           flex: 1,
           display: "flex",
@@ -172,6 +182,7 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
 
   return (
     <div
+      className="chat-panel"
       style={{
         flex: 1,
         display: "flex",
@@ -179,6 +190,7 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
       }}
     >
       <div
+        className="chat-header"
         style={{
           padding: "16px 20px",
           borderBottom: "1px solid #e5e7eb",
@@ -189,8 +201,30 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
           boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
         }}
       >
+        <button
+          type="button"
+          className="mobile-back-button"
+          onClick={onBack}
+          aria-label="Back to chats"
+          style={{
+            width: 38,
+            height: 38,
+            border: "1px solid #e5e7eb",
+            borderRadius: 8,
+            background: "#ffffff",
+            color: "#334155",
+            cursor: "pointer",
+            display: "none",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <ArrowLeft size={19} strokeWidth={2.2} />
+        </button>
         {chat.other_avatar && (
           <img
+            className="chat-header-avatar"
             src={chat.other_avatar}
             alt=""
             style={{
@@ -201,12 +235,73 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
             }}
           />
         )}
-        <strong style={{ color: "#1a1a1a", fontSize: "15px" }}>
+        <strong style={{ color: "#1a1a1a", fontSize: "15px", flex: 1 }}>
           {chat.other_username || chat.name || "Direct Chat"}
         </strong>
+        <div style={{ display: "flex", gap: 6 }}>
+          <button
+            type="button"
+            onClick={() => onAudioCall?.(chat)}
+            title="Audio call"
+            aria-label="Audio call"
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 8,
+              border: "1px solid #e5e7eb",
+              background: "#f9fafb",
+              color: "#22c55e",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "#f0fdf4";
+              e.currentTarget.style.borderColor = "#22c55e";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "#f9fafb";
+              e.currentTarget.style.borderColor = "#e5e7eb";
+            }}
+          >
+            <Phone size={16} strokeWidth={2.2} />
+          </button>
+          <button
+            type="button"
+            onClick={() => onVideoCall?.(chat)}
+            title="Video call"
+            aria-label="Video call"
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 8,
+              border: "1px solid #e5e7eb",
+              background: "#f9fafb",
+              color: "#3b82f6",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "#eff6ff";
+              e.currentTarget.style.borderColor = "#3b82f6";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "#f9fafb";
+              e.currentTarget.style.borderColor = "#e5e7eb";
+            }}
+          >
+            <Video size={16} strokeWidth={2.2} />
+          </button>
+        </div>
       </div>
 
       <div
+        className="messages-scroll"
         style={{
           flex: 1,
           overflowY: "auto",
@@ -244,6 +339,7 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
       </div>
 
       <form
+        className="message-form"
         onSubmit={handleSubmit}
         style={{
           padding: "16px 20px",
@@ -288,6 +384,7 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
 
         {fileInfo ? (
           <div
+            className="selected-file-chip"
             style={{
               display: "flex",
               alignItems: "center",
@@ -336,6 +433,7 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
           </div>
         ) : uploading ? (
           <div
+            className="upload-progress-chip"
             style={{
               display: "flex",
               alignItems: "center",
@@ -354,6 +452,7 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
         ) : null}
 
         <button
+          className="attach-button"
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
@@ -389,6 +488,7 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
           <Paperclip size={18} strokeWidth={2.2} />
         </button>
         <button
+          className="send-button"
           type="submit"
           style={{
             padding: "10px 20px",

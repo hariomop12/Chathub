@@ -1,6 +1,7 @@
 import app from "./app.js";
 import http from "http";
 import { Server } from "socket.io";
+import { PeerServer } from "peer";
 import { initSocket } from "./socket/socket.js";
 import { corsOrigin } from "./config/cors.js";
 
@@ -15,6 +16,14 @@ const io = new Server(server, {
 });
 
 initSocket(io);
+
+const peerServer = PeerServer({
+  port: 5001,
+  path: "/",
+  allow_discovery: true,
+});
+
+console.log("PeerJS server running on port 5001");
 
 const PORT = process.env.PORT || 5000;
 

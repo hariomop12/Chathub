@@ -1,5 +1,7 @@
 import { db } from "../db/db.js";
 
+const activeUsers = new Map();
+const peerMap = new Map();
 
 export const initSocket = (io) => {
   io.on("connection", (socket) => {
@@ -47,8 +49,67 @@ export const initSocket = (io) => {
       }
     });
 
+    socket.on("register-user", (userId) => {
+      if (userId) {
+        activeUsers.set(userId, socket.id);
+        socket.data.userId = userId;
+        console.log(`User ${userId} registered with socket ${socket.id}`);
+      }
+    });
+
+    socket.on("register-peer", ({ userId, peerId }) => {
+      if (userId && peerId) {
+        peerMap.set(userId, peerId);
+        console.log(`Peer registered: user=${userId} peer=${peerId}`);
+      }
+    });
+
+    socket.on("get-peer-id", ({ targetUserId }, callback) => {
+      const peerId = peerMap.get(targetUserId) || null;
+      if (callback) callback({ peerId });
+    });
+
+    socket.on("call-user", ({ targetUserId, callerId, callerUsername, callerAvatar, isVideo }) => {
+      const targetSocketId = activeUsers.get(targetUserId);
+      if (targetSocketId) {
+        io.to(targetSocketId).emit("incoming-call", {
+          callerId,
+          callerUsername,
+          callerAvatar,
+          isVideo,
+        });
+      } else {
+        socket.emit("user-busy", { targetUserId });
+      }
+    });
+
+    socket.on("call-answered", ({ targetUserId }) => {
+      const targetSocketId = activeUsers.get(targetUserId);
+      if (targetSocketId) {
+        io.to(targetSocketId).emit("call-answered");
+      }
+    });
+
+    socket.on("call-rejected", ({ targetUserId }) => {
+      const targetSocketId = activeUsers.get(targetUserId);
+      if (targetSocketId) {
+        io.to(targetSocketId).emit("call-rejected");
+      }
+    });
+
+    socket.on("end-call", ({ targetUserId }) => {
+      const targetSocketId = activeUsers.get(targetUserId);
+      if (targetSocketId) {
+        io.to(targetSocketId).emit("call-ended");
+      }
+    });
+
     socket.on("disconnect", () => {
       console.log("User disconnected:", socket.id);
+      if (socket.data.userId) {
+        activeUsers.delete(socket.data.userId);
+        peerMap.delete(socket.data.userId);
+      }
     });
   });
 };

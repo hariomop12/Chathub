@@ -4,7 +4,7 @@ export const getChats = async (req, res) => {
   try {
     const result = await db.query(
       `SELECT c.*, cm2.last_message, cm2.last_message_at,
-              other.other_username, other.other_avatar
+              other.other_user_id, other.other_username, other.other_avatar
        FROM chats c
        JOIN chat_members cm ON cm.chat_id = c.id
        LEFT JOIN LATERAL (
@@ -15,7 +15,7 @@ export const getChats = async (req, res) => {
          LIMIT 1
        ) cm2 ON true
        LEFT JOIN LATERAL (
-         SELECT u.username AS other_username, u.avatar AS other_avatar
+          SELECT u.id AS other_user_id, u.username AS other_username, u.avatar AS other_avatar
          FROM chat_members cmo
          JOIN users u ON u.id = cmo.user_id
          WHERE cmo.chat_id = c.id AND cmo.user_id != $1
@@ -55,12 +55,12 @@ export const createChat = async (req, res) => {
 
       if (existing.rows.length > 0) {
         const fullChat = await db.query(
-          `SELECT c.*, u.id AS member_id, u.username, u.avatar
+          `SELECT c.*, u.id AS other_user_id, u.username AS other_username, u.avatar AS other_avatar
            FROM chats c
            JOIN chat_members cm ON cm.chat_id = c.id
            JOIN users u ON u.id = cm.user_id
-           WHERE c.id = $1`,
-          [existing.rows[0].id]
+           WHERE c.id = $1 AND u.id != $2`,
+          [existing.rows[0].id, req.userId]
         );
         return res.json(fullChat.rows[0]);
       }
@@ -83,12 +83,12 @@ export const createChat = async (req, res) => {
     );
 
     const fullChat = await db.query(
-      `SELECT c.*, u.id AS member_id, u.username, u.avatar
+      `SELECT c.*, u.id AS other_user_id, u.username AS other_username, u.avatar AS other_avatar
        FROM chats c
        JOIN chat_members cm ON cm.chat_id = c.id
        JOIN users u ON u.id = cm.user_id
-       WHERE c.id = $1`,
-      [chatId]
+       WHERE c.id = $1 AND u.id != $2`,
+      [chatId, req.userId]
     );
 
     res.status(201).json(fullChat.rows[0]);
@@ -103,12 +103,12 @@ export const getChatById = async (req, res) => {
     const { chatId } = req.params;
 
     const chat = await db.query(
-      `SELECT c.*, u.id AS member_id, u.username, u.avatar
+      `SELECT c.*, u.id AS other_user_id, u.username AS other_username, u.avatar AS other_avatar
        FROM chats c
        JOIN chat_members cm ON cm.chat_id = c.id
        JOIN users u ON u.id = cm.user_id
-       WHERE c.id = $1`,
-      [chatId]
+       WHERE c.id = $1 AND u.id != $2`,
+      [chatId, req.userId]
     );
 
     if (chat.rows.length === 0) {

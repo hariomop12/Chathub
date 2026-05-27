@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Cropper from "react-easy-crop";
 import { Settings, X } from "lucide-react";
-import { useUser } from "@clerk/clerk-react";
+import { UserButton, useUser } from "@clerk/clerk-react";
 import { api } from "../api/api";
 
 const createImage = (url) =>
@@ -186,6 +186,7 @@ const Sidebar = ({
 
   return (
     <div
+      className="chat-sidebar"
       style={{
         width: 320,
         background: "#ffffff",
@@ -314,6 +315,7 @@ const Sidebar = ({
       >
         {chats.length === 0 ? (
           <p
+            className="empty-chat-copy"
             style={{
               padding: 20,
               color: "#94a3b8",
@@ -486,6 +488,7 @@ const Sidebar = ({
             gap: 8,
           }}
         >
+          <UserButton afterSignOutUrl="/" />
           <button
             type="button"
             onClick={() => setIsSettingsOpen(true)}

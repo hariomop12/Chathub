@@ -14,6 +14,11 @@ body {
   min-height: 100vh;
 }
 
+button,
+input {
+  font: inherit;
+}
+
 #root {
   width: 100%;
   min-height: 100vh;
@@ -81,6 +86,127 @@ body {
   animation-delay: -0.16s;
 }
 
+@media (max-width: 768px) {
+  body {
+    min-height: 100dvh;
+    overflow: hidden;
+  }
+
+  #root {
+    min-height: 100dvh;
+  }
+
+  .chat-layout {
+    width: 100%;
+    height: 100dvh !important;
+  }
+
+  .chat-sidebar {
+    width: 100% !important;
+    min-width: 0;
+    border-right: none !important;
+  }
+
+  .chat-layout.has-active-chat .chat-sidebar {
+    display: none !important;
+  }
+
+  .chat-layout:not(.has-active-chat) .chat-panel,
+  .chat-layout:not(.has-active-chat) .chat-empty-state {
+    display: none !important;
+  }
+
+  .chat-panel {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .chat-header {
+    padding: 12px 14px !important;
+    min-height: 64px;
+  }
+
+  .mobile-back-button {
+    display: flex !important;
+  }
+
+  .chat-header-avatar {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .messages-scroll {
+    padding: 14px 12px !important;
+  }
+
+  .message-bubble {
+    max-width: 84% !important;
+    padding: 10px 13px !important;
+  }
+
+  .message-form {
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom)) !important;
+    gap: 8px !important;
+    flex-wrap: wrap;
+  }
+
+  .message-form > input[type="text"] {
+    min-width: 0;
+    order: 1;
+    flex: 1 1 calc(100% - 100px) !important;
+    height: 42px;
+  }
+
+  .attach-button {
+    order: 2;
+    width: 42px !important;
+    height: 42px !important;
+    flex: 0 0 42px;
+  }
+
+  .send-button {
+    order: 3;
+    min-width: 70px;
+    height: 42px;
+    padding: 0 14px !important;
+    flex: 0 0 auto;
+  }
+
+  .selected-file-chip,
+  .upload-progress-chip {
+    order: 0;
+    width: 100%;
+    max-width: none !important;
+  }
+
+  .empty-chat-copy {
+    padding: 24px 16px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .message-form {
+    align-items: stretch;
+  }
+
+  .message-bubble {
+    max-width: 88% !important;
+  }
+
+  .message-form > input[type="text"] {
+    flex-basis: 100% !important;
+  }
+
+  .attach-button,
+  .send-button {
+    flex: 1 1 0;
+  }
+}
+
 @keyframes bounce {
   0%,
   80%,
@@ -93,4 +219,22 @@ body {
     transform: scale(1);
     opacity: 1;
   }
+}
+
+@keyframes audioBounce {
+  0%,
+  100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.call-modal-overlay {
+  animation: fadeIn 0.25s ease-out;
+}
+
+.call-modal {
+  animation: fadeIn 0.3s ease-out;
 }
