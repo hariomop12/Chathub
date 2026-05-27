@@ -70,7 +70,7 @@ export const createChat = async (req, res) => {
 
     const chat = await db.query(
       `INSERT INTO chats (name, is_group) VALUES ($1, $2) RETURNING *`,
-      [name || null, isGroup]
+    [name || null, isGroup]
     );
 
     const chatId = chat.rows[0].id;

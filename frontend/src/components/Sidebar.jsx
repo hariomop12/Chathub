@@ -30,11 +30,11 @@ const getCroppedImageFile = async (imageSrc, cropPixels) => {
     0,
     0,
     cropPixels.width,
-    cropPixels.height
+    cropPixels.height,
   );
 
   const blob = await new Promise((resolve) =>
-    canvas.toBlob(resolve, "image/jpeg", 0.92)
+    canvas.toBlob(resolve, "image/jpeg", 0.92),
   );
 
   return new File([blob], "profile-image.jpg", { type: "image/jpeg" });
@@ -148,7 +148,7 @@ const Sidebar = ({
       if (hasImageChange) {
         const croppedImageFile = await getCroppedImageFile(
           selectedImage,
-          croppedAreaPixels
+          croppedAreaPixels,
         );
 
         await user.setProfileImage({
@@ -523,156 +523,57 @@ const Sidebar = ({
           role="dialog"
           aria-modal="true"
           aria-label="User Settings"
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 50,
-            background: "rgba(15, 23, 42, 0.45)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 20,
-          }}
           onClick={closeSettings}
+          style={overlayStyle}
         >
-          <div
-            style={{
-              width: "min(92vw, 460px)",
-              background: "#ffffff",
-              borderRadius: 12,
-              boxShadow: "0 24px 80px rgba(15, 23, 42, 0.24)",
-              overflow: "hidden",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div
-              style={{
-                padding: "16px 18px",
-                borderBottom: "1px solid #e5e7eb",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 12,
-              }}
-            >
+          <div onClick={(e) => e.stopPropagation()} style={modalStyle}>
+            {/* HEADER */}
+            <div style={headerStyle}>
               <div>
-                <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>
-                  User Settings
-                </h3>
-                <p
-                  style={{
-                    margin: "4px 0 0",
-                    fontSize: 13,
-                    color: "#64748b",
-                  }}
-                >
-                  Update your name and avatar.
-                </p>
+                <h3 style={titleStyle}>Profile settings</h3>
+                <p style={subText}>Update your profile details</p>
               </div>
 
               <button
-                type="button"
                 onClick={closeSettings}
                 disabled={isUploading}
-                aria-label="Close settings"
-                style={{
-                  width: 34,
-                  height: 34,
-                  border: "none",
-                  borderRadius: 8,
-                  background: "#f1f5f9",
-                  color: "#475569",
-                  cursor: isUploading ? "not-allowed" : "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
+                style={iconBtn}
               >
-                <X size={18} />
+                ✕
               </button>
             </div>
 
-            <div style={{ padding: 18 }}>
-              <label
-                style={{
-                  display: "block",
-                  fontSize: 13,
-                  fontWeight: 700,
-                  color: "#334155",
-                }}
-              >
-                Name
-                <input
-                  type="text"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  disabled={isUploading}
-                  placeholder="Your name"
-                  style={{
-                    width: "100%",
-                    height: 42,
-                    marginTop: 8,
-                    padding: "0 12px",
-                    border: "1px solid #cbd5e1",
-                    borderRadius: 8,
-                    color: "#111827",
-                    background: isUploading ? "#f8fafc" : "#ffffff",
-                    fontSize: 14,
-                    outline: "none",
-                  }}
-                />
-              </label>
+            {/* BODY */}
+            <div style={bodyStyle}>
+              {/* Avatar */}
+              <div style={avatarSection}>
+                <img src={user?.imageUrl} style={avatar} alt="avatar" />
 
-              <label
-                style={{
-                  paddingTop: 14, 
-                  display: "block",
-                  fontSize: 13,
-                  fontWeight: 700,
-                  color: "#334155",
-                }}
-              >
-                Change profile picture
-              </label>
+                <label style={uploadBtn}>
+                  Change photo
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageSelect}
+                    hidden
+                  />
+                </label>
+              </div>
 
-              <label
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  minHeight: 40,
-                  marginTop: 16,
-                  padding: "0 14px",
-                  borderRadius: 8,
-                  background: "#111827",
-                  color: "#ffffff",
-                  fontSize: 14,
-                  fontWeight: 700,
-                  cursor: isUploading ? "not-allowed" : "pointer",
-                }}
-              >
-                Select image
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageSelect}
-                  disabled={isUploading}
-                  style={{ display: "none" }}
-                />
-              </label>
+              {/* Name */}
+              <input
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                placeholder="Your name"
+                style={input}
+              />
 
+              {/* Crop */}
               {selectedImage && (
-                <>
-                  <div
-                    style={{
-                      position: "relative",
-                      height: 320,
-                      marginTop: 16,
-                      background: "#0f172a",
-                      borderRadius: 8,
-                      overflow: "hidden",
-                    }}
-                  >
+                <div style={cropSection}>
+                  <p style={sectionTitle}>Adjust image</p>
+
+                  <div style={cropBox}>
                     <Cropper
                       image={selectedImage}
                       crop={crop}
@@ -688,83 +589,48 @@ const Sidebar = ({
                     />
                   </div>
 
-                  <label
-                    style={{
-                      display: "block",
-                      marginTop: 14,
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: "#334155",
+                  <input
+                    type="range"
+                    min={1}
+                    max={3}
+                    step={0.01}
+                    value={zoom}
+                    onChange={(e) => setZoom(Number(e.target.value))}
+                    style={rangeStyle}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedImage(null);
+                      setZoom(1);
                     }}
+                    style={dangerLink}
                   >
-                    Zoom
-                    <input
-                      type="range"
-                      min={1}
-                      max={3}
-                      step={0.01}
-                      value={zoom}
-                      onChange={(e) => setZoom(Number(e.target.value))}
-                      disabled={isUploading}
-                      style={{ width: "100%", marginTop: 8 }}
-                    />
-                  </label>
-                </>
+                    Remove selected image
+                  </button>
+                </div>
               )}
 
-              {uploadError && (
-                <p
-                  role="alert"
-                  style={{
-                    margin: "12px 0 0",
-                    color: "#dc2626",
-                    fontSize: 13,
-                  }}
-                >
-                  {uploadError}
-                </p>
-              )}
+              {uploadError && <p style={errorText}>{uploadError}</p>}
             </div>
 
-            <div
-              style={{
-                padding: 18,
-                borderTop: "1px solid #e5e7eb",
-                display: "flex",
-                justifyContent: "flex-end",
-                gap: 10,
-              }}
-            >
+            {/* FOOTER */}
+            <div style={footerStyle}>
               <button
-                type="button"
                 onClick={closeSettings}
                 disabled={isUploading}
-                style={{
-                  minHeight: 40,
-                  padding: "0 14px",
-                  border: "1px solid #cbd5e1",
-                  borderRadius: 8,
-                  background: "#ffffff",
-                  color: "#334155",
-                  fontWeight: 700,
-                  cursor: isUploading ? "not-allowed" : "pointer",
-                }}
+                style={secondaryBtn}
               >
                 Cancel
               </button>
 
               <button
-                type="button"
                 onClick={saveUserSettings}
                 disabled={!canSaveSettings}
                 style={{
-                  minHeight: 40,
-                  padding: "0 16px",
-                  border: "none",
-                  borderRadius: 8,
-                  background: !canSaveSettings ? "#94a3b8" : "#2563eb",
-                  color: "#ffffff",
-                  fontWeight: 700,
+                  ...primaryBtn,
+                  opacity: !canSaveSettings ? 0.5 : 1,
                   cursor: !canSaveSettings ? "not-allowed" : "pointer",
                 }}
               >
@@ -776,6 +642,166 @@ const Sidebar = ({
       )}
     </div>
   );
+};
+
+const overlayStyle = {
+  position: "fixed",
+  inset: 0,
+  background: "rgba(2, 6, 23, 0.65)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: 16,
+  zIndex: 1000,
+  backdropFilter: "blur(6px)",
+};
+
+const modalStyle = {
+  width: "min(460px, 100%)",
+  maxHeight: "90vh",
+  overflowY: "auto",
+  background: "#ffffff",
+  borderRadius: 14,
+  boxShadow: "0 30px 80px rgba(0,0,0,0.25)",
+};
+
+const headerStyle = {
+  padding: "18px 20px",
+  borderBottom: "1px solid #eef2f7",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+};
+
+const titleStyle = {
+  margin: 0,
+  fontSize: 16,
+  fontWeight: 700,
+  color: "#0f172a",
+};
+
+const subText = {
+  margin: "4px 0 0",
+  fontSize: 13,
+  color: "#64748b",
+};
+
+const iconBtn = {
+  width: 34,
+  height: 34,
+  borderRadius: 8,
+  border: "1px solid #e2e8f0",
+  background: "#fff",
+  cursor: "pointer",
+  fontSize: 16,
+};
+
+const bodyStyle = {
+  padding: 20,
+  display: "flex",
+  flexDirection: "column",
+  gap: 14,
+};
+
+const avatarSection = {
+  display: "flex",
+  alignItems: "center",
+  gap: 14,
+};
+
+const avatar = {
+  width: 74,
+  height: 74,
+  borderRadius: "50%",
+  objectFit: "cover",
+  border: "2px solid #e2e8f0",
+};
+
+const uploadBtn = {
+  padding: "10px 14px",
+  borderRadius: 10,
+  border: "1px solid #e2e8f0",
+  background: "#f8fafc",
+  color: "#0f172a",
+  fontSize: 13,
+  fontWeight: 600,
+  cursor: "pointer",
+};
+
+const input = {
+  width: "100%",
+  padding: "11px 12px",
+  borderRadius: 10,
+  border: "1px solid #e2e8f0",
+  outline: "none",
+  fontSize: 14,
+};
+
+const cropSection = {
+  display: "flex",
+  flexDirection: "column",
+  gap: 10,
+};
+
+const sectionTitle = {
+  margin: 0,
+  fontSize: 13,
+  fontWeight: 700,
+  color: "#334155",
+};
+
+const cropBox = {
+  width: "100%",
+  height: 260,
+  borderRadius: 12,
+  overflow: "hidden",
+  background: "#0f172a",
+};
+
+const rangeStyle = {
+  width: "100%",
+};
+
+const dangerLink = {
+  alignSelf: "flex-start",
+  border: "none",
+  background: "transparent",
+  color: "#ef4444",
+  fontSize: 13,
+  fontWeight: 600,
+  cursor: "pointer",
+};
+
+const errorText = {
+  margin: 0,
+  color: "#ef4444",
+  fontSize: 13,
+};
+
+const footerStyle = {
+  padding: "14px 20px",
+  borderTop: "1px solid #eef2f7",
+  display: "flex",
+  justifyContent: "flex-end",
+  gap: 10,
+};
+
+const secondaryBtn = {
+  padding: "9px 14px",
+  borderRadius: 10,
+  border: "1px solid #e2e8f0",
+  background: "#fff",
+  fontWeight: 600,
+  cursor: "pointer",
+};
+
+const primaryBtn = {
+  padding: "9px 14px",
+  borderRadius: 10,
+  border: "none",
+  background: "#2563eb",
+  color: "#fff",
+  fontWeight: 700,
 };
 
 export default Sidebar;

@@ -31,7 +31,7 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, typingUsers]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -146,7 +146,7 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
   const typingNames = Object.values(typingUsers || {});
   const typingText =
     typingNames.length === 1
-      ? `${typingNames[0]} is typing...`
+      ? `${typingNames[0]} is typing`
       : typingNames.length > 1
         ? `${typingNames.length} people are typing...`
         : "";
@@ -162,7 +162,7 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
           color: "#9ca3af",
           fontSize: "16px",
           fontWeight: "500",
-          background: "#f8fafc",
+          background: "#ffffff",
         }}
       >
         Select a chat to start messaging
@@ -227,10 +227,17 @@ const ChatBox = ({ chat, messages, onSendMessage, onTyping, typingUsers }) => {
               marginTop: 8,
               color: "#9ca3af",
               fontSize: 13,
-              fontStyle: "italic",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
             }}
           >
-            {typingText}
+            <span>{typingText}</span>
+            <span className="typing-dots" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
           </div>
         )}
         <div ref={bottomRef} />
