@@ -10,13 +10,14 @@ import chatRoutes from "./routes/chat.routes.js";
 import messageRoutes from "./routes/message.routes.js";
 import webhookRoutes from "./routes/webhook.routes.js";
 import uploadRoutes from "./routes/upload.routes.js";
+import { corsOrigin } from "./config/cors.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: resolve(__dirname, "../.env"), quiet: true });
 
 const app = express();
 
-app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173", credentials: true }));
+app.use(cors({ origin: corsOrigin, credentials: true }));
 app.use("/api/webhooks", express.raw({ type: "application/json" }), webhookRoutes);
 app.use(express.json({ limit: "1mb" }));
 

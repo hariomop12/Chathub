@@ -2,13 +2,15 @@ import app from "./app.js";
 import http from "http";
 import { Server } from "socket.io";
 import { initSocket } from "./socket/socket.js";
+import { corsOrigin } from "./config/cors.js";
 
 const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin: corsOrigin,
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
