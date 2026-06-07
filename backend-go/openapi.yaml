@@ -1,0 +1,511 @@
+openapi: "3.0.3"
+info:
+  title: Real-Time Chat API
+  description: |
+    Real-time messaging platform with voice/video calling.
+    Built with Go, GORM, PostgreSQL, and WebSockets.
+  version: "1.0.0"
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  contact:
+    name: Hariom
+
+servers:
+  - url: http://localhost:5000
+    description: Local development
+
+security:
+  - BearerAuth: []
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Clerk session token
+
+  responses:
+    Unauthorized:
+      description: Missing or invalid authentication token
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: user_2abc123
+        username:
+          type: string
+          example: hariom
+        email:
+          type: string
+          example: hariom@example.com
+        avatar:
+          type: string
+          nullable: true
+          example: https://img.clerk.com/avatar.jpg
+
+    Chat:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          nullable: true
+        is_group:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        last_message:
+          type: string
+          nullable: true
+        last_message_at:
+          type: string
+          format: date-time
+          nullable: true
+        other_user_id:
+          type: string
+          nullable: true
+        other_username:
+          type: string
+          nullable: true
+        other_avatar:
+          type: string
+          nullable: true
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        chat_id:
+          type: string
+          format: uuid
+        sender_id:
+          type: string
+        content:
+          type: string
+        file_url:
+          type: string
+          nullable: true
+        file_name:
+          type: string
+          nullable: true
+        file_type:
+          type: string
+          nullable: true
+        file_size:
+          type: integer
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        username:
+          type: string
+        avatar:
+          type: string
+          nullable: true
+
+    UploadResponse:
+      type: object
+      properties:
+        url:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        size:
+          type: integer
+
+paths:
+  /:
+    get:
+      operationId: healthCheck
+      summary: Health check
+      tags:
+        - System
+      security: []
+      responses:
+        "200":
+          description: Server is running
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Chat API running...
+
+  /api/users:
+    get:
+      operationId: getUsers
+      summary: Get all users
+      tags:
+        - Users
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+    post:
+      operationId: upsertUser
+      summary: Create or update current user
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: hariom
+                email:
+                  type: string
+                  example: hariom@example.com
+                avatar:
+                  type: string
+                  example: https://img.clerk.com/avatar.jpg
+      responses:
+        "200":
+          description: User upserted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/users/search:
+    get:
+      operationId: searchUsers
+      summary: Search users by name or email
+      tags:
+        - Users
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+          example: hari
+      responses:
+        "200":
+          description: Matching users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/chats:
+    get:
+      operationId: getChats
+      summary: Get all chats for current user
+      tags:
+        - Chats
+      responses:
+        "200":
+          description: List of chats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Chat"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+    post:
+      operationId: createChat
+      summary: Create a new chat
+      tags:
+        - Chats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - participantIds
+              properties:
+                participantIds:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - user_2abc123
+                    - user_2def456
+                name:
+                  type: string
+                  example: Group Chat
+      responses:
+        "200":
+          description: Existing direct chat returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Chat"
+        "201":
+          description: Chat created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Chat"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/chats/{chatId}:
+    get:
+      operationId: getChatById
+      summary: Get chat by ID
+      tags:
+        - Chats
+      parameters:
+        - name: chatId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Chat details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Chat"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Chat not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      operationId: deleteDirectChat
+      summary: Delete a direct chat
+      tags:
+        - Chats
+      parameters:
+        - name: chatId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Chat deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deleted:
+                    type: boolean
+                  chatId:
+                    type: string
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: Direct chat not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /api/messages/{chatId}:
+    get:
+      operationId: getMessages
+      summary: Get messages for a chat
+      tags:
+        - Messages
+      parameters:
+        - name: chatId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: List of messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Message"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+    post:
+      operationId: sendMessage
+      summary: Send a message
+      tags:
+        - Messages
+      parameters:
+        - name: chatId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - content
+              properties:
+                content:
+                  type: string
+                  example: Hey bro!
+      responses:
+        "201":
+          description: Message sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/upload:
+    post:
+      operationId: uploadFile
+      summary: Upload a file to Cloudflare R2
+      tags:
+        - Files
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: File to upload (max 50MB)
+      responses:
+        "200":
+          description: File uploaded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /api/webhooks/clerk:
+    post:
+      operationId: clerkWebhook
+      summary: Clerk webhook handler (user.created/updated/deleted)
+      tags:
+        - Webhooks
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          description: Webhook received
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  received:
+                    type: boolean
+        "400":
+          description: Invalid signature
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /ws:
+    get:
+      operationId: websocketEndpoint
+      summary: WebSocket endpoint for real-time events
+      tags:
+        - Real-time
+      security: []
+      description: |
+        Upgrade to WebSocket for real-time messaging.
+
+        **Client → Server events:**
+        - `register-user` — `{ userId }`
+        - `register-peer` — `{ userId, peerId }`
+        - `get-peer-id` — `{ targetUserId }`
+        - `join-room` — `{ chatId }`
+        - `leave-room` — `{ chatId }`
+        - `typing` — `{ chatId, userId, username }`
+        - `stop-typing` — `{ chatId, userId }`
+        - `send-message` — `{ chatId, senderId, content, fileUrl?, fileName?, fileType?, fileSize? }`
+        - `call-user` — `{ targetUserId, callerId, callerUsername, callerAvatar, isVideo }`
+        - `call-answered` — `{ targetUserId }`
+        - `call-rejected` — `{ targetUserId }`
+        - `end-call` — `{ targetUserId }`
+
+        **Server → Client events:**
+        - `receive-message` — full Message object
+        - `user-typing` / `user-stop-typing`
+        - `incoming-call` — `{ callerId, callerUsername, callerAvatar, isVideo }`
+        - `user-busy` — `{ targetUserId }`
+        - `call-answered` / `call-rejected` / `call-ended`
+      responses:
+        "101":
+          description: Switching Protocols to WebSocket
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
