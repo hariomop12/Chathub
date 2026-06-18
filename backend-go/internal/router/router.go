@@ -31,9 +31,12 @@ func New(cfg *config.Config, userRepo *repository.UserRepo, chatRepo *repository
 
 	r.Use(middleware.ClerkAuth(cfg.ClerkSecretKey))
 
+	wsHub := ws.NewHub(messageRepo)
+	wsHub.SetUserRepo(userRepo)
+
 	userH := handler.NewUserHandler(userRepo)
 	chatH := handler.NewChatHandler(chatRepo, messageRepo)
-	msgH := handler.NewMessageHandler(messageRepo)
+	msgH := handler.NewMessageHandler(messageRepo, wsHub)
 
 	webhookH := handler.NewWebhookHandler(userRepo, cfg.ClerkWebhookSec)
 
@@ -43,8 +46,6 @@ func New(cfg *config.Config, userRepo *repository.UserRepo, chatRepo *repository
 		var nilUpload *handler.UploadHandler
 		uploadH = nilUpload
 	}
-
-	wsHub := ws.NewHub(messageRepo)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Chat API running..."))

@@ -74,8 +74,8 @@ export const api = {
     return this.get(`/api/messages/${chatId}`);
   },
 
-  async sendMessage(chatId, content) {
-    return this.post(`/api/messages/${chatId}`, { content });
+  async sendMessage(chatId, payload) {
+    return this.post(`/api/messages/${chatId}`, payload);
   },
 
   uploadFile(file, onProgress) {

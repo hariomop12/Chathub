@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Cropper from "react-easy-crop";
 import { Settings, X } from "lucide-react";
-import { UserButton, useUser } from "@clerk/clerk-react";
+import { useUser, useClerk } from "@clerk/clerk-react";
 import { api } from "../api/api";
 
 const createImage = (url) =>
@@ -47,9 +47,12 @@ const Sidebar = ({
   onDeleteChat,
   onChatsChange,
 }) => {
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
+  const clerk = useClerk();
   const [users, setUsers] = useState([]);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  if (!isLoaded) return null;
   const [selectedImage, setSelectedImage] = useState(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -488,7 +491,7 @@ const Sidebar = ({
             gap: 8,
           }}
         >
-          <UserButton afterSignOutUrl="/" />
+          <button type="button" onClick={() => clerk.signOut()} title="Sign out" style={{width:36,height:36,borderRadius:8,border:"1px solid #e5e7eb",background:"#fff",cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center",color:"#ef4444"}}>✕</button>
           <button
             type="button"
             onClick={() => setIsSettingsOpen(true)}
