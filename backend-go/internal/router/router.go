@@ -21,8 +21,12 @@ func New(cfg *config.Config, userRepo *repository.UserRepo, chatRepo *repository
 	r.Use(chimw.Recoverer)
 	r.Use(chimw.RealIP)
 
+	origins := cfg.AllowedOrigins
+	if len(origins) == 0 {
+		origins = []string{cfg.ClientURL}
+	}
 	corsHandler := cors.New(cors.Options{
-		AllowedOrigins:   []string{cfg.ClientURL},
+		AllowedOrigins:   origins,
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
 		AllowCredentials: true,

@@ -1,6 +1,9 @@
 package config
 
-import "os"
+import (
+	"os"
+	"strings"
+)
 
 type Config struct {
 	Port            string
@@ -13,6 +16,7 @@ type Config struct {
 	R2Bucket        string
 	R2PublicURL     string
 	ClientURL       string
+	AllowedOrigins  []string
 	PeerJSPort      string
 }
 
@@ -28,8 +32,23 @@ func Load() *Config {
 		R2Bucket:        getEnv("R2_BUCKET_NAME", ""),
 		R2PublicURL:     getEnv("R2_PUBLIC_URL", ""),
 		ClientURL:       getEnv("CLIENT_URL", "http://localhost:5173"),
+		AllowedOrigins:  parseOrigins(getEnv("ALLOWED_ORIGINS", "")),
 		PeerJSPort:      getEnv("PEERJS_PORT", "5001"),
 	}
+}
+
+func parseOrigins(s string) []string {
+	if s == "" {
+		return nil
+	}
+	var origins []string
+	for _, o := range strings.Split(s, ",") {
+		o = strings.TrimSpace(o)
+		if o != "" {
+			origins = append(origins, o)
+		}
+	}
+	return origins
 }
 
 func getEnv(key, fallback string) string {
