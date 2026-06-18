@@ -93,17 +93,33 @@ const Chat = () => {
   }, [cleanupMedia]);
 
   const initiateCall = async (chat, video) => {
-    if (!user || !chat?.other_user_id) return;
+    console.log("[Call] 🟢 initiateCall called", { chatId: chat?.id, otherUserId: chat?.other_user_id, video, keys: Object.keys(chat || {}), full: JSON.stringify(chat) });
+    if (!user || !chat?.other_user_id) {
+      console.warn("[Call] ❌ blocked — user or other_user_id missing", { user: !!user, otherId: chat?.other_user_id });
+      return;
+    }
 
     const socket = getSocket();
-    socket.emit("get-peer-id", { targetUserId: chat.other_user_id }, async (res) => {
+    console.log("[Call] 📡 socket obtained, connected:", socket.connected);
+
+    const handler = async (res) => {
+      console.log("[Call] 📩 peer-id-response received", res);
+      socket.off("peer-id-response", handler);
+
       if (!res?.peerId) {
+        console.warn("[Call] ❌ peerId empty — user offline or peer not registered");
         alert("User is offline");
         return;
       }
+      console.log("[Call] ✅ peerId found:", res.peerId);
 
+      console.log("[Call] 🎥 requesting media stream, video:", video);
       const stream = await getMediaStream(video);
-      if (!stream) return;
+      if (!stream) {
+        console.warn("[Call] ❌ getMediaStream returned null — permission denied or error");
+        return;
+      }
+      console.log("[Call] ✅ media stream obtained", { audio: stream.getAudioTracks().length > 0, video: stream.getVideoTracks().length > 0 });
 
       const hasVideo = stream.getVideoTracks().length > 0;
       localStreamRef.current = stream;
@@ -115,12 +131,18 @@ const Chat = () => {
       });
 
       const peer = peerRef.current;
-      if (!peer) return;
+      if (!peer) {
+        console.warn("[Call] ❌ peerRef.current is null — PeerJS not initialized");
+        return;
+      }
+      console.log("[Call] ✅ peerRef available, calling peer.call()");
 
       const call = peer.call(res.peerId, stream);
       mediaCallRef.current = call;
+      console.log("[Call] 📞 peer.call() done, call_id:", call._id);
 
       setCallState("calling");
+      console.log("[Call] 🔔 call state set to 'calling'");
 
       socket.emit("call-user", {
         targetUserId: chat.other_user_id,
@@ -129,22 +151,30 @@ const Chat = () => {
         callerAvatar: user.imageUrl,
         isVideo: video,
       });
+      console.log("[Call] 📡 call-user emitted to socket");
 
-    call.on("stream", (remoteStream) => {
-      remoteStreamRef.current = remoteStream;
-      setRemoteStream(remoteStream);
-      setCallState("connected");
-    });
+      call.on("stream", (remoteStream) => {
+        console.log("[Call] 🔗 remote stream received", { audio: remoteStream.getAudioTracks().length > 0, video: remoteStream.getVideoTracks().length > 0 });
+        remoteStreamRef.current = remoteStream;
+        setRemoteStream(remoteStream);
+        setCallState("connected");
+      });
 
-    call.on("close", () => {
-      resetCallState();
-    });
+      call.on("close", () => {
+        console.log("[Call] 🔚 call closed");
+        resetCallState();
+      });
 
-    call.on("error", (err) => {
-      console.error("Call error:", err);
-      resetCallState();
-    });
-    });
+      call.on("error", (err) => {
+        console.error("[Call] ❌ Call error:", err);
+        resetCallState();
+      });
+    };
+
+    console.log("[Call] 👂 registering peer-id-response listener");
+    socket.on("peer-id-response", handler);
+    console.log("[Call] 🚀 emitting get-peer-id for target:", chat.other_user_id);
+    socket.emit("get-peer-id", { targetUserId: chat.other_user_id });
   };
 
   const handleAudioCall = (chat) => {
@@ -231,6 +261,11 @@ const Chat = () => {
   const fetchChats = useCallback(async () => {
     try {
       const data = await api.getChats();
+      if (data?.[0]) {
+        console.log("[Chats] raw API response — first chat:", JSON.stringify(data[0], null, 2));
+        console.log("[Chats] first chat keys:", Object.keys(data[0]));
+        console.log("[Chats] other_user_id:", data[0].other_user_id);
+      }
       setChats(data);
     } catch (err) {
       console.error("fetch chats error:", err);

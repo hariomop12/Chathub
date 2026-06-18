@@ -1,9 +1,23 @@
 package repository
 
 import (
+	"time"
+
 	"github.com/hariomop12/real-time-chat-app/backend-go/internal/model"
 	"gorm.io/gorm"
 )
+
+type chatRow struct {
+	ID            string     `json:"id"`
+	Name          *string    `json:"name"`
+	IsGroup       bool       `json:"is_group"`
+	CreatedAt     time.Time  `json:"created_at"`
+	LastMessage   *string    `json:"last_message,omitempty"`
+	LastMessageAt *time.Time `json:"last_message_at,omitempty"`
+	OtherUserID   *string    `json:"other_user_id,omitempty"`
+	OtherUsername *string    `json:"other_username,omitempty"`
+	OtherAvatar   *string    `json:"other_avatar,omitempty"`
+}
 
 type ChatRepo struct {
 	db *gorm.DB
@@ -14,7 +28,7 @@ func NewChatRepo(db *gorm.DB) *ChatRepo {
 }
 
 func (r *ChatRepo) GetByUser(userID string) ([]model.Chat, error) {
-	var chats []model.Chat
+	var rows []chatRow
 	err := r.db.Raw(`
 		SELECT c.*, cm2.last_message, cm2.last_message_at,
 		       other.other_user_id, other.other_username, other.other_avatar
@@ -36,8 +50,25 @@ func (r *ChatRepo) GetByUser(userID string) ([]model.Chat, error) {
 		) other ON true
 		WHERE cm.user_id = ?
 		ORDER BY cm2.last_message_at DESC NULLS LAST
-	`, userID, userID).Scan(&chats).Error
-	return chats, err
+	`, userID, userID).Scan(&rows).Error
+	if err != nil {
+		return nil, err
+	}
+	chats := make([]model.Chat, len(rows))
+	for i, r := range rows {
+		chats[i] = model.Chat{
+			ID:            r.ID,
+			Name:          r.Name,
+			IsGroup:       r.IsGroup,
+			CreatedAt:     r.CreatedAt,
+			LastMessage:   r.LastMessage,
+			LastMessageAt: r.LastMessageAt,
+			OtherUserID:   r.OtherUserID,
+			OtherUsername: r.OtherUsername,
+			OtherAvatar:   r.OtherAvatar,
+		}
+	}
+	return chats, nil
 }
 
 func (r *ChatRepo) FindDirectChat(userID1, userID2 string) (*string, error) {
@@ -74,15 +105,27 @@ func (r *ChatRepo) AddMembers(chatID string, userIDs []string) error {
 }
 
 func (r *ChatRepo) GetByID(chatID, userID string) (*model.Chat, error) {
-	var chat model.Chat
+	var row chatRow
 	err := r.db.Raw(`
 		SELECT c.*, u.id AS other_user_id, u.username AS other_username, u.avatar AS other_avatar
 		FROM chats c
 		JOIN chat_members cm ON cm.chat_id = c.id
 		JOIN users u ON u.id = cm.user_id
 		WHERE c.id = ? AND u.id != ?
-	`, chatID, userID).Scan(&chat).Error
-	return &chat, err
+	`, chatID, userID).Scan(&row).Error
+	if err != nil {
+		return nil, err
+	}
+	chat := &model.Chat{
+		ID:            row.ID,
+		Name:          row.Name,
+		IsGroup:       row.IsGroup,
+		CreatedAt:     row.CreatedAt,
+		OtherUserID:   row.OtherUserID,
+		OtherUsername: row.OtherUsername,
+		OtherAvatar:   row.OtherAvatar,
+	}
+	return chat, nil
 }
 
 func (r *ChatRepo) DeleteDirect(chatID, userID string) (bool, error) {

@@ -91,9 +91,17 @@ export const connectSocket = () => {
       listeners[event].push(cb);
       console.log(`${LOG_PREFIX} listener registered for "${event}" (total: ${listeners[event].length})`);
     },
-    off: (event) => {
-      console.log(`${LOG_PREFIX} all listeners removed for "${event}"`);
-      delete listeners[event];
+    off: (event, cb) => {
+      if (cb) {
+        if (listeners[event]) {
+          listeners[event] = listeners[event].filter(l => l !== cb);
+          if (listeners[event].length === 0) delete listeners[event];
+          console.log(`${LOG_PREFIX} listener removed for "${event}"`);
+        }
+      } else {
+        console.log(`${LOG_PREFIX} all listeners removed for "${event}"`);
+        delete listeners[event];
+      }
     },
     emit: (event, data) => {
       if (ws && ws.readyState === WebSocket.OPEN) {
