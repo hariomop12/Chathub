@@ -14,12 +14,17 @@ RUN CGO_ENABLED=0 go build -o /app/server ./cmd/server
 
 FROM alpine:3.19
 
-RUN apk add --no-cache ca-certificates tzdata
+RUN apk add --no-cache ca-certificates tzdata nginx nodejs npm
+RUN npm install -g peer
+RUN mkdir -p /run/nginx /app
 
 WORKDIR /app
 
 COPY --from=builder /app/server .
+COPY nginx.conf /etc/nginx/http.d/default.conf
+
+COPY start.sh /start.sh
 
 EXPOSE 8080
 
-CMD ["./server"]
+CMD ["/start.sh"]
