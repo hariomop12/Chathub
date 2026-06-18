@@ -87,7 +87,7 @@ The app uses separate config for API, WebSocket, and PeerJS connectivity:
 - `CLIENT_URL` - frontend origin used by backend CORS
 - `VITE_API_URL` - API base URL, usually `http://localhost:5000`
 - `VITE_WS_URL` - optional explicit WebSocket URL, usually `ws://localhost:5000/ws`
-- `VITE_PEER_HOST` - optional PeerJS host, defaults to `localhost`
+- `VITE_PEER_HOST` - optional PeerJS host; if unset in production, calls are disabled gracefully
 - `VITE_PEER_PORT` - PeerJS port, defaults to `5001`
 - `VITE_PEER_PATH` - PeerJS path, defaults to `/peerjs`
 
@@ -139,6 +139,8 @@ docker compose up --build
 - Frontend: `http://localhost:5174`
 - Backend: `http://localhost:5002`
 - PeerJS server: `http://localhost:5001/peerjs`
+
+For production, set `VITE_PEER_HOST` to the actual PeerJS host or subdomain if you want calls. If it is not set, chat still works and the app skips call initialization safely.
 
 ### GitHub Container Registry
 

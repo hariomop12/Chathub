@@ -375,17 +375,28 @@ const Chat = () => {
       const peerId = crypto.randomUUID();
       const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
       const apiUrl = new URL(API_URL);
-      const peerHost = import.meta.env.VITE_PEER_HOST || "localhost";
+      const peerHost = import.meta.env.VITE_PEER_HOST || "";
+      if (!peerHost) {
+        console.warn(
+          "[PeerJS] Skipping peer initialization because VITE_PEER_HOST is not set",
+        );
+        return;
+      }
       const peerPort = Number(import.meta.env.VITE_PEER_PORT || 5001);
       const peerPath = import.meta.env.VITE_PEER_PATH || "/peerjs";
       const socket = getSocket() || connectSocket();
 
-      peer = new Peer(peerId, {
-        host: peerHost,
-        port: peerPort,
-        path: peerPath,
-        secure: apiUrl.protocol === "https:",
-      });
+      try {
+        peer = new Peer(peerId, {
+          host: peerHost,
+          port: peerPort,
+          path: peerPath,
+          secure: apiUrl.protocol === "https:",
+        });
+      } catch (err) {
+        console.error("PeerJS init failed:", err);
+        return;
+      }
       peerRef.current = peer;
 
       peer.on("open", (id) => {
