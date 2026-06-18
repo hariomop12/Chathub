@@ -140,6 +140,20 @@ docker compose up --build
 - Backend: `http://localhost:5002`
 - PeerJS server: `http://localhost:5001/peerjs`
 
+### GitHub Container Registry
+
+The backend image is published by GitHub Actions on pushes to `main`:
+
+- Image: `ghcr.io/<your-github-username>/real-time-chat-app-backend`
+- Tags: `latest` and the short commit SHA
+- Workflow: [`.github/workflows/backend-image.yml`](/home/h/real-time-chat-app/.github/workflows/backend-image.yml)
+
+Pull it with:
+
+```bash
+docker pull ghcr.io/<your-github-username>/real-time-chat-app-backend:latest
+```
+
 ### API Documentation
 
 ```bash
