@@ -20,13 +20,13 @@ func (r *UserRepo) Upsert(id, username, email string, avatar *string) (*model.Us
 }
 
 func (r *UserRepo) GetAll() ([]model.User, error) {
-	var users []model.User
+	users := make([]model.User, 0)
 	err := r.db.Order("username").Find(&users).Error
 	return users, err
 }
 
 func (r *UserRepo) Search(q string) ([]model.User, error) {
-	var users []model.User
+	users := make([]model.User, 0)
 	err := r.db.Where("username ILIKE ? OR email ILIKE ?", "%"+q+"%", "%"+q+"%").
 		Limit(20).Find(&users).Error
 	return users, err

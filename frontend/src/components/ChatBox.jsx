@@ -180,6 +180,9 @@ const ChatBox = ({
     );
   }
 
+  const canCall = Boolean(chat?.other_user_id) && !chat?.is_group;
+  const safeMessages = Array.isArray(messages) ? messages : [];
+
   return (
     <div
       className="chat-panel"
@@ -238,66 +241,68 @@ const ChatBox = ({
         <strong style={{ color: "#1a1a1a", fontSize: "15px", flex: 1 }}>
           {chat.other_username || chat.name || "Direct Chat"}
         </strong>
-        <div style={{ display: "flex", gap: 6 }}>
-          <button
-            type="button"
-            onClick={() => onAudioCall?.(chat)}
-            title="Audio call"
-            aria-label="Audio call"
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 8,
-              border: "1px solid #e5e7eb",
-              background: "#f9fafb",
-              color: "#22c55e",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              transition: "0.2s",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#f0fdf4";
-              e.currentTarget.style.borderColor = "#22c55e";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "#f9fafb";
-              e.currentTarget.style.borderColor = "#e5e7eb";
-            }}
-          >
-            <Phone size={16} strokeWidth={2.2} />
-          </button>
-          <button
-            type="button"
-            onClick={() => onVideoCall?.(chat)}
-            title="Video call"
-            aria-label="Video call"
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 8,
-              border: "1px solid #e5e7eb",
-              background: "#f9fafb",
-              color: "#3b82f6",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              transition: "0.2s",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#eff6ff";
-              e.currentTarget.style.borderColor = "#3b82f6";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "#f9fafb";
-              e.currentTarget.style.borderColor = "#e5e7eb";
-            }}
-          >
-            <Video size={16} strokeWidth={2.2} />
-          </button>
-        </div>
+        {canCall ? (
+          <div style={{ display: "flex", gap: 6 }}>
+            <button
+              type="button"
+              onClick={() => onAudioCall?.(chat)}
+              title="Audio call"
+              aria-label="Audio call"
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 8,
+                border: "1px solid #e5e7eb",
+                background: "#f9fafb",
+                color: "#22c55e",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transition: "0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#f0fdf4";
+                e.currentTarget.style.borderColor = "#22c55e";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "#f9fafb";
+                e.currentTarget.style.borderColor = "#e5e7eb";
+              }}
+            >
+              <Phone size={16} strokeWidth={2.2} />
+            </button>
+            <button
+              type="button"
+              onClick={() => onVideoCall?.(chat)}
+              title="Video call"
+              aria-label="Video call"
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 8,
+                border: "1px solid #e5e7eb",
+                background: "#f9fafb",
+                color: "#3b82f6",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transition: "0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#eff6ff";
+                e.currentTarget.style.borderColor = "#3b82f6";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "#f9fafb";
+                e.currentTarget.style.borderColor = "#e5e7eb";
+              }}
+            >
+              <Video size={16} strokeWidth={2.2} />
+            </button>
+          </div>
+        ) : null}
       </div>
 
       <div
@@ -309,7 +314,7 @@ const ChatBox = ({
           background: "#f8fafc",
         }}
       >
-        {messages.map((msg) => (
+        {safeMessages.map((msg) => (
           <Message
             key={msg.id}
             message={msg}

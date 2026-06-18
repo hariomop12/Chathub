@@ -28,7 +28,7 @@ func NewChatRepo(db *gorm.DB) *ChatRepo {
 }
 
 func (r *ChatRepo) GetByUser(userID string) ([]model.Chat, error) {
-	var rows []chatRow
+	rows := make([]chatRow, 0)
 	err := r.db.Raw(`
 		SELECT c.*, cm2.last_message, cm2.last_message_at,
 		       other.other_user_id, other.other_username, other.other_avatar
@@ -121,6 +121,8 @@ func (r *ChatRepo) GetByID(chatID, userID string) (*model.Chat, error) {
 		Name:          row.Name,
 		IsGroup:       row.IsGroup,
 		CreatedAt:     row.CreatedAt,
+		LastMessage:   row.LastMessage,
+		LastMessageAt: row.LastMessageAt,
 		OtherUserID:   row.OtherUserID,
 		OtherUsername: row.OtherUsername,
 		OtherAvatar:   row.OtherAvatar,

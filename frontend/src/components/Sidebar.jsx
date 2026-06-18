@@ -237,8 +237,9 @@ const Sidebar = ({
           padding: "0 10px",
         }}
       >
-        {users
-          .filter((u) => u.id !== user?.id)
+        {Array.isArray(users) &&
+          users
+            .filter((u) => u.id !== user?.id)
           .map((u) => (
             <div
               key={u.id}
@@ -316,7 +317,7 @@ const Sidebar = ({
           padding: "0 10px",
         }}
       >
-        {chats.length === 0 ? (
+        {!Array.isArray(chats) || chats.length === 0 ? (
           <p
             className="empty-chat-copy"
             style={{

@@ -14,7 +14,7 @@ func NewMessageRepo(db *gorm.DB) *MessageRepo {
 }
 
 func (r *MessageRepo) GetByChat(chatID string) ([]model.Message, error) {
-	var msgs []model.Message
+	msgs := make([]model.Message, 0)
 	err := r.db.Raw(`
 		SELECT m.*, u.username, u.avatar
 		FROM messages m

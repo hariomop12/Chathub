@@ -266,18 +266,20 @@ const Chat = () => {
         console.log("[Chats] first chat keys:", Object.keys(data[0]));
         console.log("[Chats] other_user_id:", data[0].other_user_id);
       }
-      setChats(data);
+      setChats(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("fetch chats error:", err);
+      setChats([]);
     }
   }, []);
 
   const fetchMessages = useCallback(async (chatId) => {
     try {
       const data = await api.getMessages(chatId);
-      setMessages(data);
+      setMessages(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("fetch messages error:", err);
+      setMessages([]);
     }
   }, []);
 
@@ -307,12 +309,13 @@ const Chat = () => {
     socket.on("receive-message", (message) => {
       console.log("[Chat] 📩 receive-message:", message?.id, "sender:", message?.sender_id, "content:", message?.content?.substring(0, 50));
       setMessages((prev) => {
-        if (prev.some((m) => m.id === message.id)) {
+        const current = Array.isArray(prev) ? prev : [];
+        if (current.some((m) => m.id === message.id)) {
           console.log("[Chat] duplicate message skipped:", message.id);
-          return prev;
+          return current;
         }
         console.log("[Chat] adding message to state:", message.id);
-        return [...prev, message];
+        return [...current, message];
       });
       setTypingUsers((prev) => {
         const next = { ...prev };
@@ -342,7 +345,7 @@ const Chat = () => {
 
     socket.on("user-presence", ({ userId, online }) => {
       setChats((prev) =>
-        prev.map((c) =>
+        (Array.isArray(prev) ? prev : []).map((c) =>
           c.other_user_id === userId ? { ...c, other_online: online } : c,
         ),
       );
@@ -518,8 +521,9 @@ const Chat = () => {
       });
       console.log("[Chat] ✅ HTTP sendMessage response — id=", msg?.id, "sender=", msg?.sender_id);
       setMessages((prev) => {
-        if (prev.some((m) => m.id === msg.id)) return prev;
-        return [...prev, msg];
+        const current = Array.isArray(prev) ? prev : [];
+        if (current.some((m) => m.id === msg.id)) return current;
+        return [...current, msg];
       });
     } catch (err) {
       console.error("[Chat] ❌ handleSendMessage HTTP POST failed:", err);
