@@ -67,7 +67,7 @@
 | Auth | Clerk React SDK |
 | Routing | React Router v7 |
 | Styling | CSS-in-JS (inline styles) |
-| WebSocket | Socket.IO Client |
+| WebSocket | Native WebSocket client |
 | WebRTC | PeerJS |
 | Icons | Lucide React |
 
@@ -79,6 +79,17 @@
 - Node.js 24+
 - PostgreSQL 16+
 - PeerJS server (optional, for calls)
+
+### Environment Variables
+
+The app uses separate config for API, WebSocket, and PeerJS connectivity:
+
+- `CLIENT_URL` - frontend origin used by backend CORS
+- `VITE_API_URL` - API base URL, usually `http://localhost:5000`
+- `VITE_WS_URL` - optional explicit WebSocket URL, usually `ws://localhost:5000/ws`
+- `VITE_PEER_HOST` - optional PeerJS host, defaults to `localhost`
+- `VITE_PEER_PORT` - PeerJS port, defaults to `5001`
+- `VITE_PEER_PATH` - PeerJS path, defaults to `/peerjs`
 
 ### Backend
 
@@ -116,8 +127,18 @@ App opens at **`http://localhost:5173`**
 ### PeerJS Server (for calls)
 
 ```bash
-npx peerjs --port 5001
+npx peerjs --port 5001 --path /peerjs
 ```
+
+### Full Stack with Docker
+
+```bash
+docker compose up --build
+```
+
+- Frontend: `http://localhost:5174`
+- Backend: `http://localhost:5002`
+- PeerJS server: `http://localhost:5001/peerjs`
 
 ### API Documentation
 
@@ -157,7 +178,7 @@ npx @redocly/cli build-docs openapi.yaml -o docs/index.html
 │   │   ├── components/          # Reusable UI components
 │   │   ├── hooks/               # Custom hooks
 │   │   ├── pages/               # Route pages
-│   │   └── socket/              # Socket.IO client
+│   │   └── socket/              # Native WebSocket client
 │   ├── package.json
 │   └── vite.config.ts
 │
@@ -186,7 +207,7 @@ npx @redocly/cli build-docs openapi.yaml -o docs/index.html
 
 **Backend:** Go, Chi, GORM, PostgreSQL, gorilla/websocket, Clerk, Cloudflare R2, Svix, godotenv
 
-**Frontend:** React 19, TypeScript, Vite, Clerk, Socket.IO, PeerJS, React Router, Lucide
+**Frontend:** React 19, TypeScript, Vite, Clerk, Native WebSocket, PeerJS, React Router, Lucide
 
 **Infrastructure:** Docker, GitHub Actions (CI/CD), Neon (PostgreSQL), Cloudflare R2, Clerk Auth, PeerJS
 

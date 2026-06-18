@@ -10,7 +10,7 @@ import { api } from "../api/api";
 const getDisplayName = (user) => user?.username || user?.fullName || "Someone";
 
 const Chat = () => {
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const [chats, setChats] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -19,6 +19,7 @@ const Chat = () => {
   const userIdRef = useRef(null);
 
   const peerRef = useRef(null);
+  const peerIdRef = useRef(null);
   const mediaCallRef = useRef(null);
   const localStreamRef = useRef(null);
   const remoteStreamRef = useRef(null);
@@ -38,6 +39,8 @@ const Chat = () => {
   useEffect(() => {
     userIdRef.current = user?.id || null;
   }, [user?.id]);
+
+  if (!isLoaded) return <div style={{display:"flex",height:"100dvh",alignItems:"center",justifyContent:"center",background:"#f8fafc",color:"#64748b",fontSize:18}}>Loading...</div>;
 
   const getMediaStream = async (video) => {
     try {
@@ -247,8 +250,35 @@ const Chat = () => {
     fetchChats();
     const socket = connectSocket();
 
+    const registerUser = () => {
+      const uid = userIdRef.current;
+      console.log("[Chat] registerUser called, uid=", uid, "peerIdRef=", peerIdRef.current, "activeChatIdRef=", activeChatIdRef.current);
+      if (!uid) return;
+      socket.emit("register-user", { userId: uid });
+      if (peerIdRef.current) {
+        socket.emit("register-peer", { userId: uid, peerId: peerIdRef.current });
+      }
+      const cid = activeChatIdRef.current;
+      if (cid) {
+        socket.emit("join-room", { chatId: cid });
+      }
+    };
+
+    socket.on("connect", () => {
+      console.log("[Chat] WebSocket connect event fired");
+      registerUser();
+    });
+
     socket.on("receive-message", (message) => {
-      setMessages((prev) => [...prev, message]);
+      console.log("[Chat] 📩 receive-message:", message?.id, "sender:", message?.sender_id, "content:", message?.content?.substring(0, 50));
+      setMessages((prev) => {
+        if (prev.some((m) => m.id === message.id)) {
+          console.log("[Chat] duplicate message skipped:", message.id);
+          return prev;
+        }
+        console.log("[Chat] adding message to state:", message.id);
+        return [...prev, message];
+      });
       setTypingUsers((prev) => {
         const next = { ...prev };
         delete next[message.sender_id];
@@ -275,6 +305,14 @@ const Chat = () => {
       });
     });
 
+    socket.on("user-presence", ({ userId, online }) => {
+      setChats((prev) =>
+        prev.map((c) =>
+          c.other_user_id === userId ? { ...c, other_online: online } : c,
+        ),
+      );
+    });
+
     return () => {
       disconnectSocket();
     };
@@ -282,25 +320,41 @@ const Chat = () => {
 
   useEffect(() => {
     if (!user?.id) return;
+    console.log("[Chat] user?.id effect — user.id=", user.id, "socket.connected=", getSocket().connected, "activeChatIdRef=", activeChatIdRef.current);
+    const socket = getSocket();
+    if (socket.connected) {
+      console.log("[Chat] user?.id effect — socket connected, emitting register-user");
+      socket.emit("register-user", { userId: user.id });
+      if (peerIdRef.current) {
+        socket.emit("register-peer", { userId: user.id, peerId: peerIdRef.current });
+      }
+      if (activeChatIdRef.current) {
+        socket.emit("join-room", { chatId: activeChatIdRef.current });
+      }
+    } else {
+      console.log("[Chat] user?.id effect — socket NOT connected yet, will register on connect");
+    }
 
     let peer = null;
     const peerInitTimer = window.setTimeout(() => {
       const peerId = crypto.randomUUID();
       const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
       const apiUrl = new URL(API_URL);
+      const peerHost = import.meta.env.VITE_PEER_HOST || "localhost";
+      const peerPort = Number(import.meta.env.VITE_PEER_PORT || 5001);
+      const peerPath = import.meta.env.VITE_PEER_PATH || "/peerjs";
       const socket = getSocket() || connectSocket();
 
       peer = new Peer(peerId, {
-        host: apiUrl.hostname,
-        port: Number(import.meta.env.VITE_PEER_PORT || 5001),
-        path: "/",
+        host: peerHost,
+        port: peerPort,
+        path: peerPath,
         secure: apiUrl.protocol === "https:",
       });
       peerRef.current = peer;
 
       peer.on("open", (id) => {
-        console.log("PeerJS connected with ID:", id);
-        socket.emit("register-user", user.id);
+        peerIdRef.current = id;
         socket.emit("register-peer", { userId: user.id, peerId: id });
       });
 
@@ -368,10 +422,10 @@ const Chat = () => {
     if (activeChat) {
       fetchMessages(activeChat.id);
       const socket = getSocket();
-      socket.emit("join-room", activeChat.id);
+      socket.emit("join-room", { chatId: activeChat.id });
 
       return () => {
-        socket.emit("leave-room", activeChat.id);
+        socket.emit("leave-room", { chatId: activeChat.id });
         setTypingUsers({});
       };
     } else {
@@ -403,22 +457,28 @@ const Chat = () => {
   };
 
   const handleSendMessage = async (content, fileInfo) => {
-    if (!activeChat || !user) return;
-
-    const socket = getSocket();
-    socket.emit("send-message", {
-      chatId: activeChat.id,
-      senderId: user.id,
-      content,
-      fileUrl: fileInfo?.url || null,
-      fileName: fileInfo?.name || null,
-      fileType: fileInfo?.type || null,
-      fileSize: fileInfo?.size || null,
-    });
-    socket.emit("stop-typing", {
-      chatId: activeChat.id,
-      userId: user.id,
-    });
+    if (!activeChat || !user) {
+      console.warn("[Chat] handleSendMessage blocked — activeChat=", !!activeChat, "user=", !!user);
+      return;
+    }
+    console.log("[Chat] 🚀 handleSendMessage — chatId=", activeChat.id, "content=", content?.substring(0, 50), "fileInfo=", fileInfo);
+    try {
+      const msg = await api.sendMessage(activeChat.id, {
+        content,
+        fileUrl: fileInfo?.url || null,
+        fileName: fileInfo?.name || null,
+        fileType: fileInfo?.type || null,
+        fileSize: fileInfo?.size || null,
+      });
+      console.log("[Chat] ✅ HTTP sendMessage response — id=", msg?.id, "sender=", msg?.sender_id);
+      setMessages((prev) => {
+        if (prev.some((m) => m.id === msg.id)) return prev;
+        return [...prev, msg];
+      });
+    } catch (err) {
+      console.error("[Chat] ❌ handleSendMessage HTTP POST failed:", err);
+    }
+    getSocket().emit("stop-typing", { chatId: activeChat.id, userId: user.id });
   };
 
   const handleTyping = useCallback(
