@@ -49,7 +49,9 @@ func (h *ChatHandler) CreateChat(w http.ResponseWriter, r *http.Request) {
 		req.ParticipantIds = append(req.ParticipantIds, userID)
 	}
 
-	if len(req.ParticipantIds) == 2 {
+	isGroup := len(req.ParticipantIds) > 2
+
+	if !isGroup {
 		existingID, err := h.chatRepo.FindDirectChat(req.ParticipantIds[0], req.ParticipantIds[1])
 		if err == nil && existingID != nil {
 			chat, err := h.chatRepo.GetByID(*existingID, userID)
@@ -60,7 +62,6 @@ func (h *ChatHandler) CreateChat(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	isGroup := len(req.ParticipantIds) > 2
 	chatID, err := h.chatRepo.Create(req.Name, isGroup)
 	if err != nil {
 		writeErr(w, http.StatusInternalServerError, "Failed to create chat")
@@ -70,6 +71,18 @@ func (h *ChatHandler) CreateChat(w http.ResponseWriter, r *http.Request) {
 	if err := h.chatRepo.AddMembers(chatID, req.ParticipantIds); err != nil {
 		writeErr(w, http.StatusInternalServerError, "Failed to add members")
 		return
+	}
+
+	if !isGroup {
+		existingID, err := h.chatRepo.FindDirectChat(req.ParticipantIds[0], req.ParticipantIds[1])
+		if err == nil && existingID != nil && *existingID != chatID {
+			h.chatRepo.DeleteDirect(chatID, userID)
+			chat, err := h.chatRepo.GetByID(*existingID, userID)
+			if err == nil {
+				writeJSON(w, http.StatusOK, chat)
+				return
+			}
+		}
 	}
 
 	chat, err := h.chatRepo.GetByID(chatID, userID)
