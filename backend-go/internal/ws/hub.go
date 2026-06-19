@@ -182,6 +182,9 @@ func (c *Client) handleEvent(event struct {
 			h.mu.Lock()
 			h.peerMap[data.UserID] = data.PeerID
 			h.mu.Unlock()
+			slog.Info("[ws] peer registered", "userID", data.UserID, "peerID", data.PeerID)
+		} else {
+			slog.Warn("[ws] register-peer — invalid data", "userID", data.UserID, "peerID", data.PeerID)
 		}
 
 	case "get-peer-id":
@@ -192,6 +195,8 @@ func (c *Client) handleEvent(event struct {
 		h.mu.RLock()
 		peerID := h.peerMap[data.TargetUserID]
 		h.mu.RUnlock()
+
+		slog.Info("[ws] get-peer-id", "targetUserID", data.TargetUserID, "found_peerID", peerID, "requester", c.userID)
 
 		resp, _ := json.Marshal(SocketEvent{
 			Type: "peer-id-response",
@@ -299,19 +304,25 @@ func (c *Client) handleEvent(event struct {
 
 	case "call-user":
 		var data struct {
-			TargetUserID string `json:"targetUserId"`
-			CallerID     string `json:"callerId"`
+			TargetUserID   string `json:"targetUserId"`
+			CallerID       string `json:"callerId"`
 			CallerUsername string `json:"callerUsername"`
-			CallerAvatar string `json:"callerAvatar"`
-			IsVideo      bool   `json:"isVideo"`
+			CallerAvatar  string `json:"callerAvatar"`
+			IsVideo        bool   `json:"isVideo"`
 		}
 		json.Unmarshal(event.Data, &data)
+
+		slog.Info("[ws] call-user",
+			"from", data.CallerID, "to", data.TargetUserID,
+			"video", data.IsVideo, "caller", c.userID)
 
 		h.mu.RLock()
 		targets := h.userSockets[data.TargetUserID]
 		h.mu.RUnlock()
 
 		if len(targets) > 0 {
+			slog.Info("[ws] call-user — target found, forwarding incoming-call",
+				"targetUserID", data.TargetUserID, "sockets", len(targets))
 			resp, _ := json.Marshal(SocketEvent{
 				Type: "incoming-call",
 				Data: data,
@@ -323,6 +334,8 @@ func (c *Client) handleEvent(event struct {
 				}
 			}
 		} else {
+			slog.Warn("[ws] call-user — target offline, sending user-busy",
+				"targetUserID", data.TargetUserID)
 			resp, _ := json.Marshal(SocketEvent{
 				Type: "user-busy",
 				Data: map[string]string{"targetUserId": data.TargetUserID},

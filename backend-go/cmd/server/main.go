@@ -34,7 +34,7 @@ func main() {
 	chatRepo := repository.NewChatRepo(database)
 	messageRepo := repository.NewMessageRepo(database)
 
-	handler := router.New(cfg, userRepo, chatRepo, messageRepo)
+	handler := router.New(cfg, database, userRepo, chatRepo, messageRepo)
 
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,

@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	chimw "github.com/go-chi/chi/v5/middleware"
 	"github.com/rs/cors"
+	"gorm.io/gorm"
 	"github.com/hariomop12/real-time-chat-app/backend-go/internal/config"
 	"github.com/hariomop12/real-time-chat-app/backend-go/internal/handler"
 	"github.com/hariomop12/real-time-chat-app/backend-go/internal/middleware"
@@ -14,7 +15,7 @@ import (
 	"github.com/hariomop12/real-time-chat-app/backend-go/internal/ws"
 )
 
-func New(cfg *config.Config, userRepo *repository.UserRepo, chatRepo *repository.ChatRepo, messageRepo *repository.MessageRepo) http.Handler {
+func New(cfg *config.Config, database *gorm.DB, userRepo *repository.UserRepo, chatRepo *repository.ChatRepo, messageRepo *repository.MessageRepo) http.Handler {
 	r := chi.NewRouter()
 
 	r.Use(chimw.Logger)
@@ -51,9 +52,14 @@ func New(cfg *config.Config, userRepo *repository.UserRepo, chatRepo *repository
 		uploadH = nilUpload
 	}
 
+	healthH := handler.NewHealthHandler(database)
+
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Chat API running..."))
 	})
+
+	r.Get("/health", healthH.Check)
+	r.Get("/api/health", healthH.Check)
 
 	r.Route("/api", func(r chi.Router) {
 		r.Route("/webhooks", func(r chi.Router) {

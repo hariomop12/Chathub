@@ -43,6 +43,7 @@ const Chat = () => {
   if (!isLoaded) return <div style={{display:"flex",height:"100dvh",alignItems:"center",justifyContent:"center",background:"#f8fafc",color:"#64748b",fontSize:18}}>Loading...</div>;
 
   const getMediaStream = async (video) => {
+    console.log("[Media] 🎥 getMediaStream called, video:", video);
     try {
       if (!video) {
         return await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -108,6 +109,7 @@ const Chat = () => {
 
       if (!res?.peerId) {
         console.warn("[Call] ❌ peerId empty — user offline or peer not registered");
+        console.warn("[Call] ❌ peerRef.current=", peerRef.current?.id, "peerIdRef.current=", peerIdRef.current);
         alert("User is offline");
         return;
       }
@@ -133,13 +135,19 @@ const Chat = () => {
       const peer = peerRef.current;
       if (!peer) {
         console.warn("[Call] ❌ peerRef.current is null — PeerJS not initialized");
+        cleanupMedia();
         return;
       }
-      console.log("[Call] ✅ peerRef available, calling peer.call()");
+      console.log("[Call] ✅ peerRef available, calling peer.call() to:", res.peerId);
 
       const call = peer.call(res.peerId, stream);
+      if (!call) {
+        console.error("[Call] ❌ peer.call() returned null — target peer may be unreachable");
+        cleanupMedia();
+        return;
+      }
       mediaCallRef.current = call;
-      console.log("[Call] 📞 peer.call() done, call_id:", call._id);
+      console.log("[Call] 📞 peer.call() done");
 
       setCallState("calling");
       console.log("[Call] 🔔 call state set to 'calling'");
@@ -378,16 +386,13 @@ const Chat = () => {
       const peerId = crypto.randomUUID();
       const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
       const apiUrl = new URL(API_URL);
-      const peerHost = import.meta.env.VITE_PEER_HOST || "";
-      if (!peerHost) {
-        console.warn(
-          "[PeerJS] Skipping peer initialization because VITE_PEER_HOST is not set",
-        );
-        return;
-      }
-      const peerPort = Number(import.meta.env.VITE_PEER_PORT || 5001);
+      const peerHost = import.meta.env.VITE_PEER_HOST || apiUrl.hostname;
+      const peerPort = import.meta.env.VITE_PEER_PORT ? Number(import.meta.env.VITE_PEER_PORT) : undefined;
       const peerPath = import.meta.env.VITE_PEER_PATH || "/peerjs";
       const socket = getSocket() || connectSocket();
+
+      console.log("[PeerJS] init — host=%s port=%s path=%s secure=%s peerId=%s",
+        peerHost, peerPort ?? "default", peerPath, apiUrl.protocol === "https:", peerId);
 
       try {
         peer = new Peer(peerId, {
@@ -397,17 +402,19 @@ const Chat = () => {
           secure: apiUrl.protocol === "https:",
         });
       } catch (err) {
-        console.error("PeerJS init failed:", err);
+        console.error("[PeerJS] init failed:", err);
         return;
       }
       peerRef.current = peer;
 
       peer.on("open", (id) => {
+        console.log("[PeerJS] ✅ open — assigned peerId=%s (requested=%s)", id, peerId);
         peerIdRef.current = id;
         socket.emit("register-peer", { userId: user.id, peerId: id });
       });
 
       peer.on("call", (call) => {
+        console.log("[PeerJS] 📞 incoming call from:", call.peer);
         pendingPeerCallRef.current = call;
         setCallState((prev) => {
           if (prev === "idle") return "incoming";
@@ -416,7 +423,15 @@ const Chat = () => {
       });
 
       peer.on("error", (err) => {
-        console.error("PeerJS error:", err);
+        console.error("[PeerJS] ❌ error:", err.type, err.message);
+      });
+
+      peer.on("disconnected", () => {
+        console.warn("[PeerJS] 🔌 disconnected — will try to reconnect");
+      });
+
+      peer.on("close", () => {
+        console.log("[PeerJS] 🔚 closed");
       });
     }, 100);
 

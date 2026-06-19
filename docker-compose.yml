@@ -47,7 +47,6 @@ services:
       args:
         VITE_API_URL: "http://localhost:5174"
         VITE_CLERK_PUBLISHABLE_KEY: pk_test_d2l0dHktdG91Y2FuLTIuY2xlcmsuYWNjb3VudHMuZGV2JA
-        VITE_PEER_PORT: "5001"
     restart: unless-stopped
     ports:
       - "5174:80"
