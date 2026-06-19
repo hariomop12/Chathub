@@ -239,6 +239,16 @@ npx @redocly/cli build-docs openapi.yaml -o docs/index.html
 
 **Infrastructure:** Docker, GitHub Actions (CI/CD), Neon (PostgreSQL), Cloudflare R2, Clerk Auth, PeerJS
 
+## 🚧 Future Development
+
+- **Unit tests** — Backend Go tests + frontend Vitest
+- **Rate limiting** — API rate limit middleware
+- **Message search** — Search through chat history
+- **Read receipts** — "Seen" status on messages
+- **Push notifications** — Web push API or email notifications
+- **Typing indicator in chat list** — Shows "typing..." below username
+- **Improved online status** — Better presence indicators
+
 ## 📄 License
 
 MIT
