@@ -11,6 +11,7 @@
     <img src="https://img.shields.io/badge/WebRTC-P2P-EE2C2C" alt="WebRTC">
     <img src="https://img.shields.io/badge/Cloudflare_R2-Storage-F38020?logo=cloudflare" alt="R2">
     <img src="https://img.shields.io/badge/Vite-Build-646CFF?logo=vite" alt="Vite">
+    <img src="https://img.shields.io/badge/Dark%20Mode-🌙-000000" alt="Dark Mode">
   </p>
 </div>
 
@@ -22,10 +23,12 @@
 - **Voice & video calls** — WebRTC-based peer-to-peer calling via PeerJS
 - **File sharing** — Upload images, videos, and files to Cloudflare R2 (up to 50MB)
 - **Direct & group chats** — 1-on-1 conversations and group messaging
+- **Dark mode** — Light/dark theme toggle with localStorage persistence + system preference detection
+- **Responsive design** — Mobile-first layout with adaptive sidebar, stacked views on small screens
 - **User search** — Find users by name or email
 - **Clerk authentication** — Secure auth with JWT session tokens
 - **Webhook sync** — Automatic user profile sync via Clerk webhooks
-- **Responsive UI** — Clean, modern interface built with React + Vite
+- **Modern UI** — Glass-morphism landing page, gradient accents, smooth transitions
 
 ## 🏗 Architecture
 
@@ -66,10 +69,12 @@
 | Build | Vite 8 |
 | Auth | Clerk React SDK |
 | Routing | React Router v7 |
-| Styling | CSS-in-JS (inline styles) |
+| Styling | CSS variables + inline styles |
+| Theme | React Context + localStorage + `prefers-color-scheme` |
 | WebSocket | Native WebSocket client |
 | WebRTC | PeerJS |
 | Icons | Lucide React |
+| Image crop | react-easy-crop |
 
 ## 🚀 Getting Started
 
@@ -192,6 +197,7 @@ npx @redocly/cli build-docs openapi.yaml -o docs/index.html
 │   ├── src/
 │   │   ├── api/                 # API client
 │   │   ├── components/          # Reusable UI components
+│   │   ├── context/             # React contexts (ThemeContext)
 │   │   ├── hooks/               # Custom hooks
 │   │   ├── pages/               # Route pages
 │   │   └── socket/              # Native WebSocket client
@@ -206,6 +212,8 @@ npx @redocly/cli build-docs openapi.yaml -o docs/index.html
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | `GET` | `/` | ❌ | Health check |
+| `GET` | `/ver` | ❌ | Version endpoint (returns build tag) |
+| `GET` | `/api/health` | ❌ | Full health check (DB + PeerJS) |
 | `GET` | `/api/users` | ✅ | List all users |
 | `POST` | `/api/users` | ✅ | Create/update current user |
 | `GET` | `/api/users/search?q=` | ✅ | Search users |
@@ -223,7 +231,7 @@ npx @redocly/cli build-docs openapi.yaml -o docs/index.html
 
 **Backend:** Go, Chi, GORM, PostgreSQL, gorilla/websocket, Clerk, Cloudflare R2, Svix, godotenv
 
-**Frontend:** React 19, TypeScript, Vite, Clerk, Native WebSocket, PeerJS, React Router, Lucide
+**Frontend:** React 19, TypeScript, Vite, Clerk, Native WebSocket, PeerJS, React Router, Lucide, react-easy-crop
 
 **Infrastructure:** Docker, GitHub Actions (CI/CD), Neon (PostgreSQL), Cloudflare R2, Clerk Auth, PeerJS
 
