@@ -13,6 +13,10 @@
     <img src="https://img.shields.io/badge/Vite-Build-646CFF?logo=vite" alt="Vite">
     <img src="https://img.shields.io/badge/Dark%20Mode-🌙-000000" alt="Dark Mode">
   </p>
+
+  <p>
+    <a href="https://chat.hariomop.in"><strong>🌐 chat.hariomop.in</strong></a>
+  </p>
 </div>
 
 ---
