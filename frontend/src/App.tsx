@@ -30,7 +30,7 @@ function AuthSync() {
         username: user.username || user.fullName || "Anonymous",
         email: user.primaryEmailAddress?.emailAddress || "",
         avatar: user.imageUrl,
-      }).catch((err: unknown) => console.error("upsertUser failed:", err));
+      }).catch(() => {});
     }
   }, [isSignedIn, user]);
 

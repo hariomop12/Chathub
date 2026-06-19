@@ -103,10 +103,8 @@ export const api = {
         } else {
           try {
             const errMsg = JSON.parse(xhr.responseText).error || "Upload failed";
-            console.error("Upload failed:", xhr.status, errMsg);
             reject(new Error(errMsg));
           } catch (parseErr) {
-            console.error("Upload failed:", xhr.status, xhr.responseText);
             reject(new Error("Upload failed"));
           }
         }

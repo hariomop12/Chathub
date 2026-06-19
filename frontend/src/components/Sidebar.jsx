@@ -64,7 +64,7 @@ const Sidebar = ({
   const [uploadError, setUploadError] = useState("");
 
   useEffect(() => {
-    api.getUsers().then(setUsers).catch(console.error);
+    api.getUsers().then(setUsers).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -170,7 +170,7 @@ const Sidebar = ({
         avatar: user.imageUrl,
       });
 
-      api.getUsers().then(setUsers).catch(console.error);
+      api.getUsers().then(setUsers).catch(() => {});
 
       setIsSettingsOpen(false);
       resetImageSelection();
