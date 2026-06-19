@@ -42,9 +42,9 @@ func (r *ChatRepo) GetByUser(userID string) ([]model.Chat, error) {
 			LIMIT 1
 		) cm2 ON true
 		LEFT JOIN LATERAL (
-			SELECT u.id AS other_user_id, u.username AS other_username, u.avatar AS other_avatar
+			SELECT cmo.user_id AS other_user_id, u.username AS other_username, u.avatar AS other_avatar
 			FROM chat_members cmo
-			JOIN users u ON u.id = cmo.user_id
+			LEFT JOIN users u ON u.id = cmo.user_id
 			WHERE cmo.chat_id = c.id AND cmo.user_id != ?
 			LIMIT 1
 		) other ON true
@@ -107,12 +107,13 @@ func (r *ChatRepo) AddMembers(chatID string, userIDs []string) error {
 func (r *ChatRepo) GetByID(chatID, userID string) (*model.Chat, error) {
 	var row chatRow
 	err := r.db.Raw(`
-		SELECT c.*, u.id AS other_user_id, u.username AS other_username, u.avatar AS other_avatar
+		SELECT c.*, cmo.user_id AS other_user_id, u.username AS other_username, u.avatar AS other_avatar
 		FROM chats c
-		JOIN chat_members cm ON cm.chat_id = c.id
-		JOIN users u ON u.id = cm.user_id
-		WHERE c.id = ? AND u.id != ?
-	`, chatID, userID).Scan(&row).Error
+		JOIN chat_members cm ON cm.chat_id = c.id AND cm.user_id = ?
+		JOIN chat_members cmo ON cmo.chat_id = c.id AND cmo.user_id != ?
+		LEFT JOIN users u ON u.id = cmo.user_id
+		WHERE c.id = ?
+	`, userID, userID, chatID).Scan(&row).Error
 	if err != nil {
 		return nil, err
 	}
