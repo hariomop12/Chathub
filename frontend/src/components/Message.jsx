@@ -23,7 +23,7 @@ const getFileLabel = (type) => {
   return "FILE";
 };
 
-const FileAttachment = ({ name, size, type, onClick }) => {
+const FileAttachment = ({ name, size, type, onClick, isOwn }) => {
   const [hover, setHover] = useState(false);
 
   return (
@@ -38,8 +38,10 @@ const FileAttachment = ({ name, size, type, onClick }) => {
         padding: "12px 14px",
         marginTop: 8,
         borderRadius: 14,
-        background: hover ? "#dbeafe" : "#e0e7ff",
-        border: "1px solid #c7d2fe",
+        background: hover
+          ? isOwn ? "rgba(255,255,255,0.15)" : "var(--bg-hover)"
+          : isOwn ? "rgba(255,255,255,0.1)" : "var(--bg)",
+        border: `1px solid ${isOwn ? "rgba(255,255,255,0.2)" : "var(--border)"}`,
         cursor: "pointer",
         transition: "all 0.2s ease",
         transform: hover ? "translateY(-1px)" : "translateY(0)",
@@ -50,14 +52,14 @@ const FileAttachment = ({ name, size, type, onClick }) => {
           width: 42,
           height: 42,
           borderRadius: 12,
-          background: "#bfdbfe",
+          background: isOwn ? "rgba(255,255,255,0.2)" : "var(--primary-bg)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           flexShrink: 0,
         }}
       >
-        <FileText size={20} color="#2563eb" />
+        <FileText size={20} color={isOwn ? "#fff" : "var(--primary-light)"} />
       </div>
 
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -65,7 +67,7 @@ const FileAttachment = ({ name, size, type, onClick }) => {
           style={{
             fontSize: 14,
             fontWeight: 600,
-            color: "#1e3a8a",
+            color: isOwn ? "#fff" : "var(--text)",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -88,7 +90,7 @@ const FileAttachment = ({ name, size, type, onClick }) => {
               fontWeight: 700,
               padding: "3px 7px",
               borderRadius: 999,
-              background: "#2563eb",
+              background: isOwn ? "rgba(255,255,255,0.25)" : "var(--primary-light)",
               color: "#fff",
               letterSpacing: 0.4,
             }}
@@ -99,7 +101,7 @@ const FileAttachment = ({ name, size, type, onClick }) => {
           <span
             style={{
               fontSize: 12,
-              color: "#64748b",
+              color: isOwn ? "rgba(255,255,255,0.7)" : "var(--text-muted)",
             }}
           >
             {formatSize(size)}
@@ -245,11 +247,11 @@ const Message = ({ message, isOwn }) => {
           src={message.avatar}
           alt=""
           style={{
-            width: 38,
-            height: 38,
+            width: 34,
+            height: 34,
             borderRadius: "50%",
             objectFit: "cover",
-            border: "2px solid #e5e7eb",
+            border: "2px solid var(--border)",
             flexShrink: 0,
           }}
         />
@@ -261,11 +263,11 @@ const Message = ({ message, isOwn }) => {
             maxWidth: "72%",
             padding: "12px 16px",
             borderRadius: 20,
-            background: isOwn ? "#2563eb" : "#f1f5f9",
-            color: isOwn ? "#fff" : "#0f172a",
+            background: isOwn ? "var(--gradient-primary)" : "var(--msg-other)",
+            color: isOwn ? "#fff" : "var(--text)",
             borderBottomRightRadius: isOwn ? 6 : 20,
             borderBottomLeftRadius: isOwn ? 20 : 6,
-            boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
+            boxShadow: isOwn ? "0 2px 8px rgba(79, 70, 229, 0.2)" : "0 2px 6px rgba(0,0,0,0.04)",
           }}
         >
           {/* IMAGE */}
@@ -302,7 +304,7 @@ const Message = ({ message, isOwn }) => {
                     gap: 6,
                     marginTop: 8,
                     fontSize: 12,
-                    color: isOwn ? "#dbeafe" : "#64748b",
+                    color: isOwn ? "rgba(255,255,255,0.7)" : "var(--text-muted)",
                   }}
                 >
                   <ImageIcon size={14} />
@@ -320,6 +322,7 @@ const Message = ({ message, isOwn }) => {
           ) : message.file_url ? (
             /* FILE / PDF */
             <FileAttachment
+              isOwn={isOwn}
               name={message.file_name || "File"}
               size={message.file_size}
               type={message.file_type}

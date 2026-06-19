@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import Cropper from "react-easy-crop";
-import { Settings, X } from "lucide-react";
+import { Settings, Sun, Moon, X } from "lucide-react";
 import { useUser, useClerk } from "@clerk/clerk-react";
 import { api } from "../api/api";
+import { useTheme } from "../context/ThemeContext";
 
 const createImage = (url) =>
   new Promise((resolve, reject) => {
@@ -49,6 +50,7 @@ const Sidebar = ({
 }) => {
   const { user, isLoaded } = useUser();
   const clerk = useClerk();
+  const { theme, toggleTheme } = useTheme();
   const [users, setUsers] = useState([]);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -192,42 +194,54 @@ const Sidebar = ({
       className="chat-sidebar"
       style={{
         width: 320,
-        background: "#ffffff",
+        background: "var(--bg-sidebar)",
         display: "flex",
         flexDirection: "column",
-        borderRight: "1px solid #e5e7eb",
-        color: "#1a1a1a",
+        borderRight: "1px solid var(--border)",
+        color: "var(--text)",
       }}
     >
       {/* Header */}
       <div
         style={{
-          padding: "20px",
-          borderBottom: "1px solid #e5e7eb",
+          padding: "20px 20px 16px",
+          borderBottom: "1px solid var(--border)",
         }}
       >
-        <h2
-          style={{
-            margin: 0,
-            fontSize: 20,
-            fontWeight: 700,
-            color: "#1a1a1a",
-          }}
-        >
-          Messages
-        </h2>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{
+            width: 32, height: 32, borderRadius: 10,
+            background: "var(--gradient-primary)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            color: "#fff", fontSize: 16,
+          }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <h2
+            style={{
+              margin: 0,
+              fontSize: 18,
+              fontWeight: 700,
+              color: "var(--text)",
+            }}
+          >
+            Messages
+          </h2>
+        </div>
       </div>
 
       {/* Users */}
       <div
         style={{
-          padding: "14px 20px 10px",
-          fontSize: 13,
-          fontWeight: 600,
-          color: "#64748b",
+          padding: "16px 20px 8px",
+          fontSize: 11,
+          fontWeight: 700,
+          color: "var(--text-muted)",
+          letterSpacing: "0.8px",
+          textTransform: "uppercase",
         }}
       >
-        ALL USERS
+        All Users
       </div>
 
       <div
@@ -255,7 +269,7 @@ const Sidebar = ({
                 transition: "0.2s",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#f3f4f6";
+                e.currentTarget.style.background = "var(--bg-hover)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = "transparent";
@@ -268,8 +282,8 @@ const Sidebar = ({
                   width: 42,
                   height: 42,
                   borderRadius: "50%",
+                  border: "2px solid var(--border)",
                   objectFit: "cover",
-                  border: "2px solid #e5e7eb",
                 }}
               />
 
@@ -286,7 +300,7 @@ const Sidebar = ({
                 <div
                   style={{
                     fontSize: 12,
-                    color: "#64748b",
+                    color: "var(--text-muted)",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                   }}
@@ -301,13 +315,15 @@ const Sidebar = ({
       {/* Chats */}
       <div
         style={{
-          padding: "18px 20px 10px",
-          fontSize: 13,
-          fontWeight: 600,
-          color: "#64748b",
+          padding: "16px 20px 8px",
+          fontSize: 11,
+          fontWeight: 700,
+          color: "var(--text-muted)",
+          letterSpacing: "0.8px",
+          textTransform: "uppercase",
         }}
       >
-        YOUR CHATS
+        Your Chats
       </div>
 
       <div
@@ -322,7 +338,7 @@ const Sidebar = ({
             className="empty-chat-copy"
             style={{
               padding: 20,
-              color: "#94a3b8",
+              color: "var(--text-muted)",
               textAlign: "center",
               fontSize: 14,
             }}
@@ -341,17 +357,16 @@ const Sidebar = ({
                 alignItems: "center",
                 justifyContent: "space-between",
                 gap: 12,
-                borderRadius: 10,
-                marginBottom: 8,
-
+                borderRadius: "var(--radius-md)",
+                marginBottom: 6,
                 background:
-                  activeChat?.id === chat.id ? "#e0e7ff" : "transparent",
-
-                transition: "0.2s",
+                  activeChat?.id === chat.id ? "var(--bg-active)" : "transparent",
+                transition: "all 0.15s ease",
+                boxShadow: activeChat?.id === chat.id ? "var(--shadow-sm)" : "none",
               }}
               onMouseEnter={(e) => {
                 if (activeChat?.id !== chat.id) {
-                  e.currentTarget.style.background = "#f3f4f6";
+                  e.currentTarget.style.background = "var(--bg-hover)";
                 }
               }}
               onMouseLeave={(e) => {
@@ -378,7 +393,7 @@ const Sidebar = ({
                       height: 44,
                       borderRadius: "50%",
                       objectFit: "cover",
-                      border: "2px solid #e5e7eb",
+                      border: "2px solid var(--border)",
                     }}
                   />
                 )}
@@ -404,7 +419,7 @@ const Sidebar = ({
                         margin: "4px 0 0",
                         fontSize: 12,
                         color:
-                          activeChat?.id === chat.id ? "#4f46e5" : "#64748b",
+                          activeChat?.id === chat.id ? "var(--primary-light)" : "var(--text-muted)",
 
                         overflow: "hidden",
                         whiteSpace: "nowrap",
@@ -427,12 +442,15 @@ const Sidebar = ({
                     height: 32,
                     borderRadius: 8,
                     border: "none",
-                    background: "#fee2e2",
-                    color: "#dc2626",
+                    background: "var(--call-red)",
+                    color: "#fff",
                     cursor: "pointer",
-                    fontSize: 16,
+                    fontSize: 14,
                     transition: "0.2s",
+                    opacity: 0.7,
                   }}
+                  onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.7"; }}
                 >
                   ✕
                 </button>
@@ -446,11 +464,11 @@ const Sidebar = ({
       <div
         style={{
           padding: "14px 18px",
-          borderTop: "1px solid #e5e7eb",
+          borderTop: "1px solid var(--border)",
           display: "flex",
           alignItems: "center",
           gap: 12,
-          background: "#fafbfc",
+          background: "var(--bg-card)",
         }}
       >
         <img
@@ -477,7 +495,7 @@ const Sidebar = ({
           <div
             style={{
               fontSize: 12,
-              color: "#64748b",
+              color: "var(--text-muted)",
             }}
           >
             Online
@@ -502,8 +520,8 @@ const Sidebar = ({
             height: 36,
             border: "none",
             borderRadius: 8,
-            background: "#dbeafe",
-            color: "#2563eb",
+            background: "var(--primary-bg)",
+            color: "var(--primary-light)",
             cursor: "pointer",
             fontSize: 14,
             fontWeight: 700,
@@ -523,7 +541,53 @@ const Sidebar = ({
             gap: 8,
           }}
         >
-          <button type="button" onClick={() => clerk.signOut()} title="Sign out" style={{width:36,height:36,borderRadius:8,border:"1px solid #e5e7eb",background:"#fff",cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center",color:"#ef4444"}}>✕</button>
+          <button
+            type="button"
+            onClick={toggleTheme}
+            title={theme === "light" ? "Dark mode" : "Light mode"}
+            aria-label="Toggle theme"
+            style={{
+              width: 36,
+              height: 36,
+              border: "none",
+              borderRadius: 8,
+              background: theme === "light" ? "#f1f5f9" : "#334155",
+              color: theme === "light" ? "#f59e0b" : "#fbbf24",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "all 0.2s",
+              position: "relative",
+              overflow: "hidden",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = theme === "light" ? "#e2e8f0" : "#475569";
+              e.currentTarget.style.transform = "scale(1.08)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = theme === "light" ? "#f1f5f9" : "#334155";
+              e.currentTarget.style.transform = "scale(1)";
+            }}
+          >
+            <div style={{
+              transition: "transform 0.4s ease, opacity 0.3s ease",
+              transform: theme === "light" ? "rotate(0deg) scale(1)" : "rotate(180deg) scale(0)",
+              opacity: theme === "light" ? 1 : 0,
+              position: "absolute",
+            }}>
+              <Sun size={18} strokeWidth={2.2} />
+            </div>
+            <div style={{
+              transition: "transform 0.4s ease, opacity 0.3s ease",
+              transform: theme === "dark" ? "rotate(0deg) scale(1)" : "rotate(-180deg) scale(0)",
+              opacity: theme === "dark" ? 1 : 0,
+              position: "absolute",
+            }}>
+              <Moon size={18} strokeWidth={2.2} />
+            </div>
+          </button>
+          <button type="button" onClick={() => clerk.signOut()} title="Sign out" style={{width:36,height:36,borderRadius:8,border:"1px solid var(--border)",background:"var(--bg-card)",cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center",color:"var(--call-red)"}}>✕</button>
           <button
             type="button"
             onClick={() => setIsSettingsOpen(true)}
@@ -534,8 +598,8 @@ const Sidebar = ({
               height: 36,
               border: "none",
               borderRadius: 8,
-              background: "#e5e7eb",
-              color: "#64748b",
+              background: "var(--bg-hover)",
+              color: "var(--text-secondary)",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
@@ -543,12 +607,12 @@ const Sidebar = ({
               transition: "0.2s",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#d1d5db";
-              e.currentTarget.style.color = "#374151";
+              e.currentTarget.style.background = "var(--border)";
+              e.currentTarget.style.color = "var(--text)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = "#e5e7eb";
-              e.currentTarget.style.color = "#64748b";
+              e.currentTarget.style.background = "var(--bg-hover)";
+              e.currentTarget.style.color = "var(--text-secondary)";
             }}
           >
             <Settings size={18} strokeWidth={2.2} />
@@ -685,27 +749,28 @@ const Sidebar = ({
 const overlayStyle = {
   position: "fixed",
   inset: 0,
-  background: "rgba(2, 6, 23, 0.65)",
+  background: "rgba(0, 0, 0, 0.6)",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   padding: 16,
   zIndex: 1000,
-  backdropFilter: "blur(6px)",
+  backdropFilter: "blur(8px)",
 };
 
 const modalStyle = {
   width: "min(460px, 100%)",
   maxHeight: "90vh",
   overflowY: "auto",
-  background: "#ffffff",
-  borderRadius: 14,
-  boxShadow: "0 30px 80px rgba(0,0,0,0.25)",
+  background: "var(--bg-card)",
+  borderRadius: "var(--radius-lg)",
+  boxShadow: "0 30px 80px rgba(0,0,0,0.3)",
+  animation: "slideUp 0.3s ease-out",
 };
 
 const headerStyle = {
   padding: "18px 20px",
-  borderBottom: "1px solid #eef2f7",
+  borderBottom: "1px solid var(--border)",
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
@@ -715,21 +780,22 @@ const titleStyle = {
   margin: 0,
   fontSize: 16,
   fontWeight: 700,
-  color: "#0f172a",
+  color: "var(--text)",
 };
 
 const subText = {
   margin: "4px 0 0",
   fontSize: 13,
-  color: "#64748b",
+  color: "var(--text-secondary)",
 };
 
 const iconBtn = {
   width: 34,
   height: 34,
-  borderRadius: 8,
-  border: "1px solid #e2e8f0",
-  background: "#fff",
+  borderRadius: "var(--radius-sm)",
+  border: "1px solid var(--border)",
+  background: "var(--bg-card)",
+  color: "var(--text-muted)",
   cursor: "pointer",
   fontSize: 16,
 };
@@ -752,15 +818,15 @@ const avatar = {
   height: 74,
   borderRadius: "50%",
   objectFit: "cover",
-  border: "2px solid #e2e8f0",
+  border: "3px solid var(--border)",
 };
 
 const uploadBtn = {
   padding: "10px 14px",
   borderRadius: 10,
-  border: "1px solid #e2e8f0",
-  background: "#f8fafc",
-  color: "#0f172a",
+  border: "1px solid var(--border)",
+  background: "var(--bg)",
+  color: "var(--text)",
   fontSize: 13,
   fontWeight: 600,
   cursor: "pointer",
@@ -770,7 +836,9 @@ const input = {
   width: "100%",
   padding: "11px 12px",
   borderRadius: 10,
-  border: "1px solid #e2e8f0",
+  border: "1px solid var(--border)",
+  background: "var(--bg)",
+  color: "var(--text)",
   outline: "none",
   fontSize: 14,
 };
@@ -785,15 +853,15 @@ const sectionTitle = {
   margin: 0,
   fontSize: 13,
   fontWeight: 700,
-  color: "#334155",
+  color: "var(--text)",
 };
 
 const cropBox = {
   width: "100%",
   height: 260,
-  borderRadius: 12,
+  borderRadius: "var(--radius-md)",
   overflow: "hidden",
-  background: "#0f172a",
+  background: "var(--text)",
 };
 
 const rangeStyle = {
@@ -804,7 +872,7 @@ const dangerLink = {
   alignSelf: "flex-start",
   border: "none",
   background: "transparent",
-  color: "#ef4444",
+  color: "var(--call-red)",
   fontSize: 13,
   fontWeight: 600,
   cursor: "pointer",
@@ -812,13 +880,13 @@ const dangerLink = {
 
 const errorText = {
   margin: 0,
-  color: "#ef4444",
+  color: "var(--call-red)",
   fontSize: 13,
 };
 
 const footerStyle = {
   padding: "14px 20px",
-  borderTop: "1px solid #eef2f7",
+  borderTop: "1px solid var(--border)",
   display: "flex",
   justifyContent: "flex-end",
   gap: 10,
@@ -827,8 +895,9 @@ const footerStyle = {
 const secondaryBtn = {
   padding: "9px 14px",
   borderRadius: 10,
-  border: "1px solid #e2e8f0",
-  background: "#fff",
+  border: "1px solid var(--border)",
+  background: "var(--bg-card)",
+  color: "var(--text)",
   fontWeight: 600,
   cursor: "pointer",
 };
@@ -837,9 +906,11 @@ const primaryBtn = {
   padding: "9px 14px",
   borderRadius: 10,
   border: "none",
-  background: "#2563eb",
+  background: "var(--primary)",
   color: "#fff",
   fontWeight: 700,
+  cursor: "pointer",
+  boxShadow: "0 4px 12px rgba(79, 70, 229, 0.3)",
 };
 
 export default Sidebar;

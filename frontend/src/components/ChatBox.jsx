@@ -170,10 +170,10 @@ const ChatBox = ({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          color: "#9ca3af",
+          color: "var(--text-muted)",
           fontSize: "16px",
           fontWeight: "500",
-          background: "#ffffff",
+          background: "var(--bg)",
         }}
       >
         Select a chat to start messaging
@@ -191,18 +191,21 @@ const ChatBox = ({
         flex: 1,
         display: "flex",
         flexDirection: "column",
+        background: "var(--bg)",
+        position: "relative",
       }}
     >
       <div
         className="chat-header"
         style={{
-          padding: "16px 20px",
-          borderBottom: "1px solid #e5e7eb",
-          background: "#ffffff",
+          padding: "14px 20px",
+          borderBottom: "1px solid var(--border)",
+          background: "var(--bg-card)",
           display: "flex",
           alignItems: "center",
           gap: 12,
-          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
+          boxShadow: "var(--shadow-sm)",
+          zIndex: 10,
         }}
       >
         <button
@@ -213,10 +216,10 @@ const ChatBox = ({
           style={{
             width: 38,
             height: 38,
-            border: "1px solid #e5e7eb",
+            border: "1px solid var(--border)",
             borderRadius: 8,
-            background: "#ffffff",
-            color: "#334155",
+            background: "var(--bg-card)",
+            color: "var(--text-secondary)",
             cursor: "pointer",
             display: "none",
             alignItems: "center",
@@ -235,11 +238,11 @@ const ChatBox = ({
               width: 40,
               height: 40,
               borderRadius: "50%",
-              border: "2px solid #e5e7eb",
+              border: "2px solid var(--border)",
             }}
           />
         )}
-        <strong style={{ color: "#1a1a1a", fontSize: "15px", flex: 1 }}>
+        <strong style={{ color: "var(--text)", fontSize: "15px", flex: 1 }}>
           {chat.other_username || chat.name || "Direct Chat"}
         </strong>
         {canCall ? (
@@ -253,9 +256,9 @@ const ChatBox = ({
                 width: 36,
                 height: 36,
                 borderRadius: 8,
-                border: "1px solid #e5e7eb",
-                background: "#f9fafb",
-                color: "#22c55e",
+                border: "1px solid var(--border)",
+                background: "var(--bg-card)",
+                color: "var(--call-green)",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -263,12 +266,12 @@ const ChatBox = ({
                 transition: "0.2s",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#f0fdf4";
-                e.currentTarget.style.borderColor = "#22c55e";
+                e.currentTarget.style.background = "rgba(34,197,94,0.08)";
+                e.currentTarget.style.borderColor = "var(--call-green)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#f9fafb";
-                e.currentTarget.style.borderColor = "#e5e7eb";
+                e.currentTarget.style.background = "var(--bg-card)";
+                e.currentTarget.style.borderColor = "var(--border)";
               }}
             >
               <Phone size={16} strokeWidth={2.2} />
@@ -282,9 +285,9 @@ const ChatBox = ({
                 width: 36,
                 height: 36,
                 borderRadius: 8,
-                border: "1px solid #e5e7eb",
-                background: "#f9fafb",
-                color: "#3b82f6",
+                border: "1px solid var(--border)",
+                background: "var(--bg-card)",
+                color: "var(--call-blue)",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -292,12 +295,12 @@ const ChatBox = ({
                 transition: "0.2s",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#eff6ff";
-                e.currentTarget.style.borderColor = "#3b82f6";
+                e.currentTarget.style.background = "rgba(59,130,246,0.08)";
+                e.currentTarget.style.borderColor = "var(--call-blue)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#f9fafb";
-                e.currentTarget.style.borderColor = "#e5e7eb";
+                e.currentTarget.style.background = "var(--bg-card)";
+                e.currentTarget.style.borderColor = "var(--border)";
               }}
             >
               <Video size={16} strokeWidth={2.2} />
@@ -312,7 +315,7 @@ const ChatBox = ({
           flex: 1,
           overflowY: "auto",
           padding: 20,
-          background: "#f8fafc",
+          background: "var(--bg)",
         }}
       >
         {safeMessages.map((msg) => (
@@ -326,7 +329,7 @@ const ChatBox = ({
           <div
             style={{
               marginTop: 8,
-              color: "#9ca3af",
+              color: "var(--text-secondary)",
               fontSize: 13,
               display: "flex",
               alignItems: "center",
@@ -348,12 +351,12 @@ const ChatBox = ({
         className="message-form"
         onSubmit={handleSubmit}
         style={{
-          padding: "16px 20px",
-          borderTop: "1px solid #e5e7eb",
+          padding: "14px 20px",
+          borderTop: "1px solid var(--border)",
           display: "flex",
           gap: 10,
-          background: "#ffffff",
-          boxShadow: "0 -1px 3px rgba(0, 0, 0, 0.05)",
+          background: "var(--bg-card)",
+          boxShadow: "0 -1px 3px rgba(0, 0, 0, 0.04)",
         }}
       >
         <input
@@ -364,20 +367,20 @@ const ChatBox = ({
           style={{
             flex: 1,
             padding: "10px 15px",
-            borderRadius: 8,
-            border: "1px solid #e5e7eb",
-            background: "#f9fafb",
-            color: "#1a1a1a",
+            borderRadius: "var(--radius-sm)",
+            border: "1px solid var(--border)",
+            background: "var(--bg)",
+            color: "var(--text)",
             outline: "none",
             fontSize: "14px",
             transition: "border-color 0.2s",
           }}
           onFocus={(e) => {
-            e.target.style.borderColor = "#3b82f6";
-            e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
+            e.target.style.borderColor = "var(--primary-light)";
+            e.target.style.boxShadow = "0 0 0 3px rgba(99, 102, 241, 0.1)";
           }}
           onBlurCapture={(e) => {
-            e.target.style.borderColor = "#e5e7eb";
+            e.target.style.borderColor = "var(--border)";
             e.target.style.boxShadow = "none";
           }}
         />
@@ -396,21 +399,21 @@ const ChatBox = ({
               alignItems: "center",
               gap: 8,
               padding: "6px 12px",
-              background: "#f3f4f6",
+              background: "var(--bg-hover)",
               borderRadius: 8,
-              border: "1px solid #e5e7eb",
+              border: "1px solid var(--border)",
               maxWidth: 200,
             }}
           >
             {fileInfo.type?.startsWith("image/") ? (
-              <Image size={16} color="#3b82f6" />
+              <Image size={16} color="var(--primary-light)" />
             ) : (
-              <FileText size={16} color="#3b82f6" />
+              <FileText size={16} color="var(--primary-light)" />
             )}
             <span
               style={{
                 fontSize: 13,
-                color: "#374151",
+                color: "var(--text)",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
@@ -419,7 +422,7 @@ const ChatBox = ({
             >
               {fileInfo.name}
             </span>
-            <span style={{ fontSize: 11, color: "#9ca3af", flexShrink: 0 }}>
+            <span style={{ fontSize: 11, color: "var(--text-muted)", flexShrink: 0 }}>
               {formatSize(fileInfo.size)}
             </span>
             <button
@@ -428,7 +431,7 @@ const ChatBox = ({
               style={{
                 background: "none",
                 border: "none",
-                color: "#6b7280",
+                color: "var(--text-muted)",
                 cursor: "pointer",
                 padding: 2,
                 display: "flex",
@@ -445,13 +448,13 @@ const ChatBox = ({
               alignItems: "center",
               gap: 6,
               padding: "6px 12px",
-              background: "#f3f4f6",
+              background: "var(--bg-hover)",
               borderRadius: 8,
-              border: "1px solid #e5e7eb",
+              border: "1px solid var(--border)",
             }}
           >
-            <Loader size={16} className="animate-spin" color="#3b82f6" />
-            <span style={{ fontSize: 13, color: "#6b7280" }}>
+            <Loader size={16} className="animate-spin" color="var(--primary-light)" />
+            <span style={{ fontSize: 13, color: "var(--text-secondary)" }}>
               {uploadProgress}%
             </span>
           </div>
@@ -467,10 +470,10 @@ const ChatBox = ({
           style={{
             width: 42,
             height: 42,
-            border: "1px solid #e5e7eb",
+            border: "1px solid var(--border)",
             borderRadius: 8,
-            background: uploading ? "#f3f4f6" : "#f9fafb",
-            color: uploading ? "#9ca3af" : "#6b7280",
+            background: uploading ? "var(--bg-hover)" : "var(--bg-card)",
+            color: uploading ? "var(--text-muted)" : "var(--text-secondary)",
             cursor: uploading ? "not-allowed" : "pointer",
             opacity: uploading ? 0.5 : 1,
             display: "flex",
@@ -480,14 +483,14 @@ const ChatBox = ({
           }}
           onMouseEnter={(e) => {
             if (!uploading) {
-              e.currentTarget.style.background = "#f3f4f6";
-              e.currentTarget.style.color = "#1a1a1a";
+              e.currentTarget.style.background = "var(--bg-hover)";
+              e.currentTarget.style.color = "var(--text)";
             }
           }}
           onMouseLeave={(e) => {
             if (!uploading) {
-              e.currentTarget.style.background = "#f9fafb";
-              e.currentTarget.style.color = "#6b7280";
+              e.currentTarget.style.background = "var(--bg-card)";
+              e.currentTarget.style.color = "var(--text-secondary)";
             }
           }}
         >
@@ -498,21 +501,22 @@ const ChatBox = ({
           type="submit"
           style={{
             padding: "10px 20px",
-            background: "#3b82f6",
+            background: "var(--gradient-primary)",
             color: "#fff",
             border: "none",
-            borderRadius: 8,
+            borderRadius: "var(--radius-sm)",
             cursor: "pointer",
             fontWeight: "600",
             fontSize: "14px",
             transition: "all 0.2s",
+            boxShadow: "0 4px 12px rgba(79, 70, 229, 0.25)",
           }}
           onMouseEnter={(e) => {
-            e.target.style.background = "#2563eb";
+            e.target.style.opacity = "0.9";
             e.target.style.transform = "translateY(-1px)";
           }}
           onMouseLeave={(e) => {
-            e.target.style.background = "#3b82f6";
+            e.target.style.opacity = "1";
             e.target.style.transform = "translateY(0)";
           }}
         >

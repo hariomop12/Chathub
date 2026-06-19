@@ -40,7 +40,7 @@ const Chat = () => {
     userIdRef.current = user?.id || null;
   }, [user?.id]);
 
-  if (!isLoaded) return <div style={{display:"flex",height:"100dvh",alignItems:"center",justifyContent:"center",background:"#f8fafc",color:"#64748b",fontSize:18}}>Loading...</div>;
+  if (!isLoaded) return <div style={{display:"flex",height:"100dvh",alignItems:"center",justifyContent:"center",background:"var(--bg)",color:"var(--text-muted)",fontSize:18}}>Loading...</div>;
 
   const getMediaStream = async (video) => {
     console.log("[Media] 🎥 getMediaStream called, video:", video);
@@ -568,8 +568,8 @@ const Chat = () => {
       style={{
         display: "flex",
         height: "100dvh",
-        background: "#f8fafc",
-        color: "#1a1a1a",
+        background: "var(--bg)",
+        color: "var(--text)",
         overflow: "hidden",
       }}
     >
