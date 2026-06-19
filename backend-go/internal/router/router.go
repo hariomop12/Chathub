@@ -53,11 +53,6 @@ func New(cfg *config.Config, database *gorm.DB, userRepo *repository.UserRepo, c
 		w.Write([]byte("Chat API running..."))
 	})
 
-	r.Get("/ver", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/plain")
-		w.Write([]byte("v2-api-deployed"))
-	})
-
 	r.Get("/health", healthH.Check)
 	r.Get("/api/health", healthH.Check)
 

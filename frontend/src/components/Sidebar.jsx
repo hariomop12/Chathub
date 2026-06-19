@@ -502,37 +502,6 @@ const Sidebar = ({
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={async () => {
-            try {
-              const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
-              const res = await fetch(apiUrl + "/ver");
-              const text = await res.text();
-              alert("Backend version: " + text);
-            } catch (e) {
-              alert("Backend unreachable: " + e.message);
-            }
-          }}
-          title="Check backend version"
-          style={{
-            width: 36,
-            height: 36,
-            border: "none",
-            borderRadius: 8,
-            background: "var(--primary-bg)",
-            color: "var(--primary-light)",
-            cursor: "pointer",
-            fontSize: 14,
-            fontWeight: 700,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          v
-        </button>
-
         {/* Settings */}
         <div
           style={{

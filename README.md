@@ -216,7 +216,6 @@ npx @redocly/cli build-docs openapi.yaml -o docs/index.html
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | `GET` | `/` | ❌ | Health check |
-| `GET` | `/ver` | ❌ | Version endpoint (returns build tag) |
 | `GET` | `/api/health` | ❌ | Full health check (DB + PeerJS) |
 | `GET` | `/api/users` | ✅ | List all users |
 | `POST` | `/api/users` | ✅ | Create/update current user |
