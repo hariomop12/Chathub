@@ -22,15 +22,10 @@ func New(cfg *config.Config, database *gorm.DB, userRepo *repository.UserRepo, c
 	r.Use(chimw.Recoverer)
 	r.Use(chimw.RealIP)
 
-	origins := cfg.AllowedOrigins
-	if len(origins) == 0 {
-		origins = []string{cfg.ClientURL}
-	}
 	corsHandler := cors.New(cors.Options{
-		AllowedOrigins:   origins,
+		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
-		AllowCredentials: true,
 	})
 	r.Use(corsHandler.Handler)
 
