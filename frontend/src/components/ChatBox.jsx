@@ -123,6 +123,7 @@ const ChatBox = ({
 
       setFileInfo(result);
     } catch (err) {
+      console.error("handleFileSelect error:", err);
       setFileError(err.message || "Upload failed");
     } finally {
       if (progressTimerRef.current) {
