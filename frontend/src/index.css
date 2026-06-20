@@ -39,6 +39,9 @@
   --gradient-primary: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
   --gradient-warm: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   --gradient-subtle: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  --home-bg-start: #f8fafc;
+  --home-bg-mid: #f1f5f9;
+  --home-bg-end: #eef2ff;
 }
 
 [data-theme="dark"] {
@@ -66,6 +69,10 @@
   --msg-other: #1e293b;
   --msg-other-text: #f1f5f9;
   --gradient-subtle: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  --gradient-home: linear-gradient(-45deg, #1e293b, #0f172a, #1e1b4b, #1e293b);
+  --home-bg-start: #1e293b;
+  --home-bg-mid: #0f172a;
+  --home-bg-end: #1e1b4b;
   --call-green: #4ade80;
   --call-red: #f87171;
   --call-blue: #60a5fa;
@@ -153,6 +160,12 @@ button, input {
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 @keyframes glow {
