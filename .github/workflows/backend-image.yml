@@ -15,7 +15,7 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: real-time-chat-app-backend
+  IMAGE_NAME: chathub-backend
 
 jobs:
   build-and-push:
