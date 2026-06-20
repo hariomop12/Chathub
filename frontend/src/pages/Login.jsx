@@ -1,5 +1,6 @@
-import { SignIn } from "@clerk/clerk-react";
+import { SignIn, useAuth } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
 
 const taglines = [
   "Secure. Instant. Seamless.",
@@ -8,7 +9,10 @@ const taglines = [
 ];
 
 const Login = () => {
+  const { isSignedIn, isLoaded } = useAuth();
   const [taglineIndex, setTaglineIndex] = useState(0);
+
+  if (isLoaded && isSignedIn) return <Navigate to="/chat" />;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -173,6 +177,7 @@ const Login = () => {
               <p style={styles.formSubtitle}>One place for chat, calls, and file sharing.</p>
             </div>
             <SignIn
+              afterSignInUrl="/chat"
               appearance={{
                 variables: {
                   colorPrimary: "#818cf8",
