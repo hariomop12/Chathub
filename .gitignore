@@ -93,8 +93,8 @@ build/
 \# Rebuild artifacts
 *.tgz
 
-# Ignore node lockfiles only if you don't want them in git (keep if you track locks)
-# package-lock.json
-# yarn.lock
-# pnpm-lock.yaml
+# pnpm lockfile (tracked in git)
+package-lock.json
+yarn.lock
+yarn-error.log
 .vercel

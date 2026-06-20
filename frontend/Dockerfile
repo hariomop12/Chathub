@@ -1,9 +1,11 @@
 FROM node:20-alpine AS builder
 
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 COPY . .
 
@@ -19,7 +21,7 @@ ENV VITE_CLERK_PUBLISHABLE_KEY=$VITE_CLERK_PUBLISHABLE_KEY
 ARG VITE_PEER_PORT
 ENV VITE_PEER_PORT=$VITE_PEER_PORT
 
-RUN npm run build
+RUN pnpm run build
 
 FROM nginx:1.26-alpine
 
