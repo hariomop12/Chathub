@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { useState, useEffect } from "react";
 import Cropper from "react-easy-crop";
-import { Settings, Sun, Moon, X } from "lucide-react";
+import { Settings, Sun, Moon, LogOut } from "lucide-react";
 import { useUser, useClerk } from "@clerk/clerk-react";
 import { api } from "../api/api";
 import { useTheme } from "../context/ThemeContext";
@@ -55,7 +55,6 @@ const Sidebar = ({
   const [users, setUsers] = useState([]);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
-  if (!isLoaded) return null;
   const [selectedImage, setSelectedImage] = useState(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -79,6 +78,8 @@ const Sidebar = ({
       setDisplayName(user.fullName || user.username || "");
     }
   }, [isSettingsOpen, user]);
+
+  if (!isLoaded) return null;
 
   const startChat = async (otherUser) => {
     try {
@@ -326,26 +327,20 @@ const Sidebar = ({
             onClick={toggleTheme}
             title={theme === "light" ? "Dark mode" : "Light mode"}
             aria-label="Toggle theme"
-            className="w-9 h-9 border-none rounded-[8px] cursor-pointer flex items-center justify-center transition-all duration-200 relative overflow-hidden hover:scale-105"
+            className="w-9 h-9 border-none rounded-[8px] cursor-pointer flex items-center justify-center transition-all duration-200 relative overflow-hidden hover:scale-105 hover:opacity-80"
             style={{
               background: theme === "light" ? "#f1f5f9" : "#334155",
               color: theme === "light" ? "#f59e0b" : "#fbbf24",
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = theme === "light" ? "#e2e8f0" : "#475569";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = theme === "light" ? "#f1f5f9" : "#334155";
-            }}
           >
-            <div className="absolute" style={{
+            <div className="absolute inset-0 flex items-center justify-center" style={{
               transition: "transform 0.4s ease, opacity 0.3s ease",
               transform: theme === "light" ? "rotate(0deg) scale(1)" : "rotate(180deg) scale(0)",
               opacity: theme === "light" ? 1 : 0,
             }}>
               <Sun size={18} strokeWidth={2.2} />
             </div>
-            <div className="absolute" style={{
+            <div className="absolute inset-0 flex items-center justify-center" style={{
               transition: "transform 0.4s ease, opacity 0.3s ease",
               transform: theme === "dark" ? "rotate(0deg) scale(1)" : "rotate(-180deg) scale(0)",
               opacity: theme === "dark" ? 1 : 0,
@@ -353,7 +348,9 @@ const Sidebar = ({
               <Moon size={18} strokeWidth={2.2} />
             </div>
           </button>
-          <button type="button" onClick={() => clerk.signOut()} title="Sign out" className="w-9 h-9 rounded-[8px] border border-border bg-bg-card cursor-pointer text-base flex items-center justify-center text-call-red shrink-0">✕</button>
+          <button type="button" onClick={() => clerk.signOut()} title="Sign out" aria-label="Sign out" className="w-9 h-9 rounded-[8px] border border-border bg-bg-card cursor-pointer flex items-center justify-center text-call-red shrink-0 transition-all duration-200 hover:bg-red-50 hover:border-red-200 hover:text-red-600 hover:scale-105 hover:shadow-sm active:scale-95">
+            <LogOut size={16} strokeWidth={2.2} />
+          </button>
           <button
             type="button"
             onClick={() => setIsSettingsOpen(true)}

@@ -13,14 +13,14 @@ const Login = () => {
   const { isSignedIn, isLoaded } = useAuth();
   const [taglineIndex, setTaglineIndex] = useState(0);
 
-  if (isLoaded && isSignedIn) return <Navigate to="/chat" />;
-
   useEffect(() => {
     const interval = setInterval(() => {
       setTaglineIndex((i) => (i + 1) % taglines.length);
     }, 3500);
     return () => clearInterval(interval);
   }, []);
+
+  if (isLoaded && isSignedIn) return <Navigate to="/chat" />;
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-[#0b1120] via-[#1a1f36] to-[#0f1923] bg-[length:400%_400%] animate-gradient-shift p-5 relative overflow-hidden">
