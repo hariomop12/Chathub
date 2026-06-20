@@ -24,19 +24,20 @@ const Login = () => {
           .login-container { flex-direction: column !important; gap: 32px !important; text-align: center !important; }
           .login-hero { max-width: 480px !important; }
           .login-title { font-size: 32px !important; }
+          .login-subtitle { font-size: 15px !important; }
           .login-features { align-items: center !important; }
           .login-review { justify-content: center !important; }
           .login-form { max-width: 100% !important; }
           .login-form-inner { padding: 24px !important; }
           .login-badge { margin-left: auto !important; margin-right: auto !important; }
           .login-logo { display: flex !important; justify-content: center !important; }
+          .login-mockup { display: none !important; }
           .orb-1 { width: 300px !important; height: 300px !important; top: -10% !important; }
           .orb-2 { width: 250px !important; height: 250px !important; }
           .orb-3 { width: 200px !important; height: 200px !important; }
         }
         @media (max-width: 480px) {
           .login-title { font-size: 26px !important; }
-          .login-subtitle { font-size: 15px !important; }
           .login-form-inner { padding: 20px 16px !important; }
           .login-hero { margin-bottom: 0 !important; }
           .login-float1 { display: none !important; }
@@ -44,6 +45,9 @@ const Login = () => {
           .login-float3 { display: none !important; }
         }
       `}</style>
+
+      {/* Animated gradient background */}
+      <div style={styles.bgGlow} />
 
       {/* Animated gradient orbs */}
       <div style={styles.orb} className="orb-1" />
@@ -53,7 +57,7 @@ const Login = () => {
       {/* Grid overlay */}
       <div style={styles.gridOverlay} />
 
-      {/* Floating chat bubbles */}
+      {/* Floating icons */}
       <div className="login-float1" style={styles.floatingBubble1}>
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.5 }}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </div>
@@ -82,6 +86,7 @@ const Login = () => {
 
           <p className="login-subtitle" style={styles.subtitle} key={taglineIndex}>
             {taglines[taglineIndex]}
+            <span style={styles.typingCursor}>|</span>
           </p>
 
           <div className="login-features" style={styles.features}>
@@ -122,6 +127,40 @@ const Login = () => {
             <span style={styles.reviewText}>
               <strong>1,200+</strong> users love ChatHub
             </span>
+          </div>
+
+          {/* Mock Chat Preview */}
+          <div className="login-mockup" style={styles.mockup}>
+            <div style={styles.mockupHeader}>
+              <div style={styles.mockupDots}>
+                <span style={{ ...styles.mockupDot, background: "#ef4444" }} />
+                <span style={{ ...styles.mockupDot, background: "#f59e0b" }} />
+                <span style={{ ...styles.mockupDot, background: "#22c55e" }} />
+              </div>
+              <div style={styles.mockupTitle}>ChatHub</div>
+              <div style={{ width: 40 }} />
+            </div>
+            <div style={styles.mockupBody}>
+              <div style={styles.mockupMsgLeft}>
+                <div style={styles.mockupAvatar} />
+                <div>
+                  <div style={styles.mockupMsgBubbleLeft}>Hey! How are you?</div>
+                  <div style={{ ...styles.mockupMsgBubbleLeft, marginTop: 4, width: "60%" }}>Want to catch up?</div>
+                </div>
+              </div>
+              <div style={styles.mockupMsgRight}>
+                <div>
+                  <div style={styles.mockupMsgBubbleRight}>Hey! I'm great!</div>
+                  <div style={{ ...styles.mockupMsgBubbleRight, marginTop: 4, width: "50%" }}>Sure, let's do it</div>
+                </div>
+              </div>
+              <div style={styles.mockupInput}>
+                <div style={styles.mockupInputText}>Type a message...</div>
+                <div style={styles.mockupSendBtn}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -230,10 +269,18 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     minHeight: "100vh",
-    background: "linear-gradient(135deg, #0b1120 0%, #1a1f36 40%, #0f1923 70%, #0b1120 100%)",
+    background: "linear-gradient(-45deg, #0b1120, #1a1f36, #0f1923, #0b1120)",
+    backgroundSize: "400% 400%",
+    animation: "gradientShift 15s ease infinite",
     padding: "20px",
     position: "relative",
     overflow: "hidden",
+  },
+  bgGlow: {
+    position: "absolute",
+    inset: 0,
+    background: "radial-gradient(ellipse at 20% 50%, rgba(79,70,229,0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 50%, rgba(236,72,153,0.06) 0%, transparent 50%)",
+    pointerEvents: "none",
   },
   orb: {
     position: "absolute",
@@ -360,7 +407,13 @@ const styles = {
     color: "rgba(255,255,255,0.5)",
     marginBottom: "36px",
     minHeight: "28px",
-    transition: "opacity 0.3s ease",
+  },
+  typingCursor: {
+    display: "inline-block",
+    marginLeft: 2,
+    animation: "pulse 1s step-end infinite",
+    fontWeight: 100,
+    color: "rgba(255,255,255,0.3)",
   },
   features: {
     display: "flex",
@@ -391,6 +444,7 @@ const styles = {
     display: "flex",
     alignItems: "center",
     gap: "12px",
+    marginBottom: "32px",
   },
   avatars: {
     display: "flex",
@@ -411,6 +465,102 @@ const styles = {
   reviewText: {
     fontSize: "13px",
     color: "rgba(255,255,255,0.45)",
+  },
+  mockup: {
+    background: "rgba(15, 23, 42, 0.5)",
+    borderRadius: "16px",
+    border: "1px solid rgba(148, 163, 184, 0.12)",
+    overflow: "hidden",
+    backdropFilter: "blur(12px)",
+    maxWidth: 360,
+  },
+  mockupHeader: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: "12px 16px",
+    borderBottom: "1px solid rgba(148, 163, 184, 0.08)",
+  },
+  mockupDots: {
+    display: "flex",
+    gap: 6,
+  },
+  mockupDot: {
+    width: 8,
+    height: 8,
+    borderRadius: "50%",
+    opacity: 0.7,
+  },
+  mockupTitle: {
+    fontSize: 12,
+    fontWeight: 600,
+    color: "rgba(255,255,255,0.5)",
+    letterSpacing: "0.3px",
+  },
+  mockupBody: {
+    padding: "14px 16px",
+    display: "flex",
+    flexDirection: "column",
+    gap: 10,
+  },
+  mockupMsgLeft: {
+    display: "flex",
+    alignItems: "flex-end",
+    gap: 8,
+  },
+  mockupAvatar: {
+    width: 28,
+    height: 28,
+    borderRadius: "50%",
+    background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+    flexShrink: 0,
+  },
+  mockupMsgBubbleLeft: {
+    background: "rgba(99, 102, 241, 0.15)",
+    borderRadius: "0 14px 14px 14px",
+    padding: "10px 14px",
+    fontSize: 12,
+    color: "rgba(255,255,255,0.75)",
+    lineHeight: 1.4,
+    maxWidth: "80%",
+  },
+  mockupMsgRight: {
+    display: "flex",
+    justifyContent: "flex-end",
+  },
+  mockupMsgBubbleRight: {
+    background: "rgba(99, 102, 241, 0.25)",
+    borderRadius: "14px 0 14px 14px",
+    padding: "10px 14px",
+    fontSize: 12,
+    color: "rgba(255,255,255,0.8)",
+    lineHeight: 1.4,
+    maxWidth: "80%",
+  },
+  mockupInput: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    marginTop: 6,
+    padding: "8px 12px",
+    borderRadius: 10,
+    background: "rgba(148, 163, 184, 0.06)",
+    border: "1px solid rgba(148, 163, 184, 0.08)",
+  },
+  mockupInputText: {
+    flex: 1,
+    fontSize: 11,
+    color: "rgba(255,255,255,0.25)",
+  },
+  mockupSendBtn: {
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+    background: "rgba(99, 102, 241, 0.3)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "rgba(255,255,255,0.4)",
   },
   formContainer: {
     flex: 1,
