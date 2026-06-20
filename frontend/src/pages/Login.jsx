@@ -1,6 +1,7 @@
 import { SignIn, useAuth } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
+import clsx from "clsx";
 
 const taglines = [
   "Secure. Instant. Seamless.",
@@ -22,7 +23,7 @@ const Login = () => {
   }, []);
 
   return (
-    <div style={styles.wrapper}>
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-[#0b1120] via-[#1a1f36] to-[#0f1923] bg-[length:400%_400%] animate-gradient-shift p-5 relative overflow-hidden">
       <style>{`
         @media (max-width: 900px) {
           .login-container { flex-direction: column !important; gap: 32px !important; text-align: center !important; }
@@ -51,117 +52,159 @@ const Login = () => {
       `}</style>
 
       {/* Animated gradient background */}
-      <div style={styles.bgGlow} />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse at 20% 50%, rgba(79,70,229,0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 50%, rgba(236,72,153,0.06) 0%, transparent 50%)",
+        }}
+      />
 
       {/* Animated gradient orbs */}
-      <div style={styles.orb} className="orb-1" />
-      <div style={styles.orb2} className="orb-2" />
-      <div style={styles.orb3} className="orb-3" />
+      <div
+        className="absolute top-[-15%] right-[-10%] w-[600px] h-[600px] rounded-full pointer-events-none orb-1"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(79, 70, 229, 0.12) 0%, rgba(99, 102, 241, 0.05) 40%, transparent 70%)",
+          animation: "float 8s ease-in-out infinite",
+        }}
+      />
+      <div
+        className="absolute bottom-[-20%] left-[-5%] w-[500px] h-[500px] rounded-full pointer-events-none orb-2"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(236, 72, 153, 0.08) 0%, rgba(236, 72, 153, 0.03) 40%, transparent 70%)",
+          animation: "float 10s ease-in-out infinite reverse",
+        }}
+      />
+      <div
+        className="absolute top-[40%] left-[50%] w-[400px] h-[400px] rounded-full pointer-events-none orb-3"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, transparent 60%)",
+          animation: "float 12s ease-in-out infinite 2s",
+        }}
+      />
 
       {/* Grid overlay */}
-      <div style={styles.gridOverlay} />
+      <div
+        className="absolute inset-0 bg-[length:60px_60px] pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)",
+        }}
+      />
 
       {/* Floating icons */}
-      <div className="login-float1" style={styles.floatingBubble1}>
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.5 }}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <div
+        className="login-float1 absolute top-[12%] left-[8%] text-[rgba(99,102,241,0.3)] pointer-events-none"
+        style={{ animation: "float 7s ease-in-out infinite" }}
+      >
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-50"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
       </div>
-      <div className="login-float2" style={styles.floatingBubble2}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.4 }}><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+      <div
+        className="login-float2 absolute bottom-[18%] right-[12%] text-[rgba(236,72,153,0.25)] pointer-events-none"
+        style={{ animation: "float 9s ease-in-out infinite reverse" }}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-40"><polygon points="23 7 16 12 23 17 23 7" /><rect x="1" y="5" width="15" height="14" rx="2" ry="2" /></svg>
       </div>
-      <div className="login-float3" style={styles.floatingBubble3}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.35 }}><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
+      <div
+        className="login-float3 absolute top-[55%] left-[5%] text-[rgba(59,130,246,0.2)] pointer-events-none"
+        style={{ animation: "float 11s ease-in-out infinite 3s" }}
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-35"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z" /><circle cx="12" cy="10" r="3" /></svg>
       </div>
 
-      <div className="login-container" style={styles.container}>
+      <div className="login-container flex gap-12 items-center max-w-[1100px] w-full relative z-10">
         {/* Left: Hero */}
-        <div className="login-hero" style={styles.content}>
-          <div className="login-badge" style={styles.badge}>✨ Real-time messaging</div>
+        <div className="login-hero flex-1 text-white animate-slide-up">
+          <div className="login-badge inline-flex px-3.5 py-1.5 rounded-full border border-[rgba(99,102,241,0.25)] bg-[rgba(99,102,241,0.08)] text-[#a5b4fc] text-xs font-semibold tracking-wide mb-6 backdrop-blur-sm">✨ Real-time messaging</div>
 
-          <div className="login-logo" style={styles.logoWrapper}>
-            <div style={styles.logoIcon}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <div className="login-logo mb-5">
+            <div className="w-[52px] h-[52px] rounded-[14px] bg-gradient-to-br from-[#4f46e5] to-[#6366f1] flex items-center justify-center shadow-[0_8px_24px_rgba(79,70,229,0.35),0_0_40px_rgba(79,70,229,0.15)]">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
             </div>
           </div>
 
-          <h1 className="login-title" style={styles.title}>
+          <h1 className="login-title text-5xl font-extrabold mb-3 tracking-tight leading-tight">
             Where conversations{" "}
-            <span style={styles.gradientText}>come alive</span>
+            <span className="bg-gradient-to-br from-[#818cf8] via-[#a78bfa] to-[#f472b6] bg-clip-text text-transparent">come alive</span>
           </h1>
 
-          <p className="login-subtitle" style={styles.subtitle} key={taglineIndex}>
+          <p className="login-subtitle text-lg font-normal text-[rgba(255,255,255,0.5)] mb-9 min-h-[28px]" key={taglineIndex}>
             {taglines[taglineIndex]}
-            <span style={styles.typingCursor}>|</span>
+            <span className="inline-block ml-0.5 font-thin text-[rgba(255,255,255,0.3)]" style={{ animation: "pulse 1s step-end infinite" }}>|</span>
           </p>
 
-          <div className="login-features" style={styles.features}>
-            <div style={styles.featureItem}>
-              <div style={styles.featureIcon}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
+          <div className="login-features flex flex-col gap-3.5 mb-9">
+            <div className="flex items-center gap-3 text-sm text-[rgba(255,255,255,0.65)] font-medium">
+              <div className="w-7 h-7 rounded-lg bg-[rgba(99,102,241,0.12)] flex items-center justify-center text-[#818cf8] shrink-0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z" /><circle cx="12" cy="10" r="3" /></svg>
               </div>
               <span>End-to-end encrypted</span>
             </div>
-            <div style={styles.featureItem}>
-              <div style={styles.featureIcon}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            <div className="flex items-center gap-3 text-sm text-[rgba(255,255,255,0.65)] font-medium">
+              <div className="w-7 h-7 rounded-lg bg-[rgba(99,102,241,0.12)] flex items-center justify-center text-[#818cf8] shrink-0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7" /><rect x="1" y="5" width="15" height="14" rx="2" ry="2" /></svg>
               </div>
               <span>Voice & video calls</span>
             </div>
-            <div style={styles.featureItem}>
-              <div style={styles.featureIcon}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <div className="flex items-center gap-3 text-sm text-[rgba(255,255,255,0.65)] font-medium">
+              <div className="w-7 h-7 rounded-lg bg-[rgba(99,102,241,0.12)] flex items-center justify-center text-[#818cf8] shrink-0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /></svg>
               </div>
               <span>File sharing</span>
             </div>
-            <div style={styles.featureItem}>
-              <div style={styles.featureIcon}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <div className="flex items-center gap-3 text-sm text-[rgba(255,255,255,0.65)] font-medium">
+              <div className="w-7 h-7 rounded-lg bg-[rgba(99,102,241,0.12)] flex items-center justify-center text-[#818cf8] shrink-0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
               </div>
               <span>Lightning fast</span>
             </div>
           </div>
 
-          <div className="login-review" style={styles.reviewBar}>
-            <div style={styles.avatars}>
+          <div className="login-review flex items-center gap-3 mb-8">
+            <div className="flex items-center">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} style={styles.miniAvatar}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <div key={i} className="w-8 h-8 rounded-full border-2 border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.04)] flex items-center justify-center text-[rgba(255,255,255,0.25)] -mr-2">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
                 </div>
               ))}
             </div>
-            <span style={styles.reviewText}>
+            <span className="text-sm text-[rgba(255,255,255,0.45)]">
               <strong>1,200+</strong> users love ChatHub
             </span>
           </div>
 
           {/* Mock Chat Preview */}
-          <div className="login-mockup" style={styles.mockup}>
-            <div style={styles.mockupHeader}>
-              <div style={styles.mockupDots}>
-                <span style={{ ...styles.mockupDot, background: "#ef4444" }} />
-                <span style={{ ...styles.mockupDot, background: "#f59e0b" }} />
-                <span style={{ ...styles.mockupDot, background: "#22c55e" }} />
+          <div className="login-mockup bg-[rgba(15,23,42,0.5)] rounded-2xl border border-[rgba(148,163,184,0.12)] overflow-hidden backdrop-blur-md max-w-[360px]">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[rgba(148,163,184,0.08)]">
+              <div className="flex gap-1.5">
+                <span className="w-2 h-2 rounded-full opacity-70" style={{ background: "#ef4444" }} />
+                <span className="w-2 h-2 rounded-full opacity-70" style={{ background: "#f59e0b" }} />
+                <span className="w-2 h-2 rounded-full opacity-70" style={{ background: "#22c55e" }} />
               </div>
-              <div style={styles.mockupTitle}>ChatHub</div>
-              <div style={{ width: 40 }} />
+              <div className="text-xs font-semibold text-[rgba(255,255,255,0.5)] tracking-wide">ChatHub</div>
+              <div className="w-10" />
             </div>
-            <div style={styles.mockupBody}>
-              <div style={styles.mockupMsgLeft}>
-                <div style={styles.mockupAvatar} />
+            <div className="px-4 py-3.5 flex flex-col gap-2.5">
+              <div className="flex items-end gap-2">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#6366f1] to-[#8b5cf6] shrink-0" />
                 <div>
-                  <div style={styles.mockupMsgBubbleLeft}>Hey! How are you?</div>
-                  <div style={{ ...styles.mockupMsgBubbleLeft, marginTop: 4, width: "60%" }}>Want to catch up?</div>
+                  <div className="bg-[rgba(99,102,241,0.15)] rounded-[0_14px_14px_14px] px-3.5 py-2.5 text-xs text-[rgba(255,255,255,0.75)] leading-[1.4] max-w-[80%]">Hey! How are you?</div>
+                  <div className="bg-[rgba(99,102,241,0.15)] rounded-[0_14px_14px_14px] px-3.5 py-2.5 text-xs text-[rgba(255,255,255,0.75)] leading-[1.4] max-w-[80%] mt-1 w-[60%]">Want to catch up?</div>
                 </div>
               </div>
-              <div style={styles.mockupMsgRight}>
+              <div className="flex justify-end">
                 <div>
-                  <div style={styles.mockupMsgBubbleRight}>Hey! I'm great!</div>
-                  <div style={{ ...styles.mockupMsgBubbleRight, marginTop: 4, width: "50%" }}>Sure, let's do it</div>
+                  <div className="bg-[rgba(99,102,241,0.25)] rounded-[14px_0_14px_14px] px-3.5 py-2.5 text-xs text-[rgba(255,255,255,0.8)] leading-[1.4] max-w-[80%]">Hey! I'm great!</div>
+                  <div className="bg-[rgba(99,102,241,0.25)] rounded-[14px_0_14px_14px] px-3.5 py-2.5 text-xs text-[rgba(255,255,255,0.8)] leading-[1.4] max-w-[80%] mt-1 w-[50%]">Sure, let's do it</div>
                 </div>
               </div>
-              <div style={styles.mockupInput}>
-                <div style={styles.mockupInputText}>Type a message...</div>
-                <div style={styles.mockupSendBtn}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              <div className="flex items-center gap-2 mt-1.5 px-3 py-2 rounded-[10px] bg-[rgba(148,163,184,0.06)] border border-[rgba(148,163,184,0.08)]">
+                <div className="flex-1 text-xs text-[rgba(255,255,255,0.25)]">Type a message...</div>
+                <div className="w-7 h-7 rounded-lg bg-[rgba(99,102,241,0.3)] flex items-center justify-center text-[rgba(255,255,255,0.4)]">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
                 </div>
               </div>
             </div>
@@ -169,12 +212,12 @@ const Login = () => {
         </div>
 
         {/* Right: Sign-in */}
-        <div className="login-form" style={styles.formContainer}>
-          <div className="login-form-inner" style={styles.formCard}>
-            <div style={styles.formHeader}>
-              <div style={styles.formEyebrow}>Secure access</div>
-              <h2 style={styles.formTitle}>Sign in to ChatHub</h2>
-              <p style={styles.formSubtitle}>One place for chat, calls, and file sharing.</p>
+        <div className="login-form flex-1 w-full max-w-[440px]" style={{ animation: "slideUp 0.5s ease-out 0.1s both" }}>
+          <div className="login-form-inner bg-gradient-to-b from-[rgba(15,23,42,0.84)] to-[rgba(15,23,42,0.72)] rounded-3xl p-7 border border-[rgba(148,163,184,0.18)] shadow-[0_24px_70px_-18px_rgba(2,6,23,0.75),0_0_0_1px_rgba(255,255,255,0.04)] backdrop-blur-xl">
+            <div className="mb-[18px] text-left">
+              <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.08em] uppercase text-[#a5b4fc] mb-2.5">Secure access</div>
+              <h2 className="text-[#f8fafc] text-[28px] leading-[1.1] tracking-[-0.03em] font-extrabold mb-2">Sign in to ChatHub</h2>
+              <p className="text-[#94a3b8] text-sm leading-relaxed">One place for chat, calls, and file sharing.</p>
             </div>
             <SignIn
               afterSignInUrl="/chat"
@@ -266,350 +309,6 @@ const Login = () => {
       </div>
     </div>
   );
-};
-
-const styles = {
-  wrapper: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: "100vh",
-    background: "linear-gradient(-45deg, #0b1120, #1a1f36, #0f1923, #0b1120)",
-    backgroundSize: "400% 400%",
-    animation: "gradientShift 15s ease infinite",
-    padding: "20px",
-    position: "relative",
-    overflow: "hidden",
-  },
-  bgGlow: {
-    position: "absolute",
-    inset: 0,
-    background: "radial-gradient(ellipse at 20% 50%, rgba(79,70,229,0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 50%, rgba(236,72,153,0.06) 0%, transparent 50%)",
-    pointerEvents: "none",
-  },
-  orb: {
-    position: "absolute",
-    top: "-15%",
-    right: "-10%",
-    width: "600px",
-    height: "600px",
-    borderRadius: "50%",
-    background: "radial-gradient(circle, rgba(79, 70, 229, 0.12) 0%, rgba(99, 102, 241, 0.05) 40%, transparent 70%)",
-    animation: "float 8s ease-in-out infinite",
-    pointerEvents: "none",
-  },
-  orb2: {
-    position: "absolute",
-    bottom: "-20%",
-    left: "-5%",
-    width: "500px",
-    height: "500px",
-    borderRadius: "50%",
-    background: "radial-gradient(circle, rgba(236, 72, 153, 0.08) 0%, rgba(236, 72, 153, 0.03) 40%, transparent 70%)",
-    animation: "float 10s ease-in-out infinite reverse",
-    pointerEvents: "none",
-  },
-  orb3: {
-    position: "absolute",
-    top: "40%",
-    left: "50%",
-    width: "400px",
-    height: "400px",
-    borderRadius: "50%",
-    background: "radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, transparent 60%)",
-    animation: "float 12s ease-in-out infinite 2s",
-    pointerEvents: "none",
-  },
-  gridOverlay: {
-    position: "absolute",
-    inset: 0,
-    backgroundImage: `
-      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)
-    `,
-    backgroundSize: "60px 60px",
-    pointerEvents: "none",
-  },
-  floatingBubble1: {
-    position: "absolute",
-    top: "12%",
-    left: "8%",
-    color: "rgba(99, 102, 241, 0.3)",
-    animation: "float 7s ease-in-out infinite",
-    pointerEvents: "none",
-  },
-  floatingBubble2: {
-    position: "absolute",
-    bottom: "18%",
-    right: "12%",
-    color: "rgba(236, 72, 153, 0.25)",
-    animation: "float 9s ease-in-out infinite reverse",
-    pointerEvents: "none",
-  },
-  floatingBubble3: {
-    position: "absolute",
-    top: "55%",
-    left: "5%",
-    color: "rgba(59, 130, 246, 0.2)",
-    animation: "float 11s ease-in-out infinite 3s",
-    pointerEvents: "none",
-  },
-  container: {
-    display: "flex",
-    gap: "48px",
-    alignItems: "center",
-    maxWidth: "1100px",
-    width: "100%",
-    position: "relative",
-    zIndex: 1,
-  },
-  badge: {
-    display: "inline-flex",
-    padding: "6px 14px",
-    borderRadius: "999px",
-    border: "1px solid rgba(99, 102, 241, 0.25)",
-    background: "rgba(99, 102, 241, 0.08)",
-    color: "#a5b4fc",
-    fontSize: "12px",
-    fontWeight: 600,
-    letterSpacing: "0.3px",
-    marginBottom: "24px",
-    backdropFilter: "blur(8px)",
-  },
-  content: {
-    flex: 1,
-    color: "#ffffff",
-    animation: "slideUp 0.5s ease-out",
-  },
-  logoWrapper: {
-    marginBottom: "20px",
-  },
-  logoIcon: {
-    width: 52,
-    height: 52,
-    borderRadius: 14,
-    background: "linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    boxShadow: "0 8px 24px rgba(79, 70, 229, 0.35), 0 0 40px rgba(79, 70, 229, 0.15)",
-  },
-  title: {
-    fontSize: "44px",
-    fontWeight: "800",
-    marginBottom: "12px",
-    letterSpacing: "-0.5px",
-    lineHeight: 1.2,
-  },
-  gradientText: {
-    background: "linear-gradient(135deg, #818cf8 0%, #a78bfa 50%, #f472b6 100%)",
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
-  },
-  subtitle: {
-    fontSize: "18px",
-    fontWeight: "400",
-    color: "rgba(255,255,255,0.5)",
-    marginBottom: "36px",
-    minHeight: "28px",
-  },
-  typingCursor: {
-    display: "inline-block",
-    marginLeft: 2,
-    animation: "pulse 1s step-end infinite",
-    fontWeight: 100,
-    color: "rgba(255,255,255,0.3)",
-  },
-  features: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "14px",
-    marginBottom: "36px",
-  },
-  featureItem: {
-    display: "flex",
-    alignItems: "center",
-    gap: "12px",
-    fontSize: "14px",
-    color: "rgba(255,255,255,0.65)",
-    fontWeight: "500",
-  },
-  featureIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: 8,
-    background: "rgba(99, 102, 241, 0.12)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "#818cf8",
-    flexShrink: 0,
-  },
-  reviewBar: {
-    display: "flex",
-    alignItems: "center",
-    gap: "12px",
-    marginBottom: "32px",
-  },
-  avatars: {
-    display: "flex",
-    alignItems: "center",
-  },
-  miniAvatar: {
-    width: 32,
-    height: 32,
-    borderRadius: "50%",
-    border: "2px solid rgba(255,255,255,0.08)",
-    background: "rgba(255,255,255,0.04)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "rgba(255,255,255,0.25)",
-    marginRight: -8,
-  },
-  reviewText: {
-    fontSize: "13px",
-    color: "rgba(255,255,255,0.45)",
-  },
-  mockup: {
-    background: "rgba(15, 23, 42, 0.5)",
-    borderRadius: "16px",
-    border: "1px solid rgba(148, 163, 184, 0.12)",
-    overflow: "hidden",
-    backdropFilter: "blur(12px)",
-    maxWidth: 360,
-  },
-  mockupHeader: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "12px 16px",
-    borderBottom: "1px solid rgba(148, 163, 184, 0.08)",
-  },
-  mockupDots: {
-    display: "flex",
-    gap: 6,
-  },
-  mockupDot: {
-    width: 8,
-    height: 8,
-    borderRadius: "50%",
-    opacity: 0.7,
-  },
-  mockupTitle: {
-    fontSize: 12,
-    fontWeight: 600,
-    color: "rgba(255,255,255,0.5)",
-    letterSpacing: "0.3px",
-  },
-  mockupBody: {
-    padding: "14px 16px",
-    display: "flex",
-    flexDirection: "column",
-    gap: 10,
-  },
-  mockupMsgLeft: {
-    display: "flex",
-    alignItems: "flex-end",
-    gap: 8,
-  },
-  mockupAvatar: {
-    width: 28,
-    height: 28,
-    borderRadius: "50%",
-    background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-    flexShrink: 0,
-  },
-  mockupMsgBubbleLeft: {
-    background: "rgba(99, 102, 241, 0.15)",
-    borderRadius: "0 14px 14px 14px",
-    padding: "10px 14px",
-    fontSize: 12,
-    color: "rgba(255,255,255,0.75)",
-    lineHeight: 1.4,
-    maxWidth: "80%",
-  },
-  mockupMsgRight: {
-    display: "flex",
-    justifyContent: "flex-end",
-  },
-  mockupMsgBubbleRight: {
-    background: "rgba(99, 102, 241, 0.25)",
-    borderRadius: "14px 0 14px 14px",
-    padding: "10px 14px",
-    fontSize: 12,
-    color: "rgba(255,255,255,0.8)",
-    lineHeight: 1.4,
-    maxWidth: "80%",
-  },
-  mockupInput: {
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 6,
-    padding: "8px 12px",
-    borderRadius: 10,
-    background: "rgba(148, 163, 184, 0.06)",
-    border: "1px solid rgba(148, 163, 184, 0.08)",
-  },
-  mockupInputText: {
-    flex: 1,
-    fontSize: 11,
-    color: "rgba(255,255,255,0.25)",
-  },
-  mockupSendBtn: {
-    width: 28,
-    height: 28,
-    borderRadius: 8,
-    background: "rgba(99, 102, 241, 0.3)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "rgba(255,255,255,0.4)",
-  },
-  formContainer: {
-    flex: 1,
-    width: "100%",
-    maxWidth: 440,
-    animation: "slideUp 0.5s ease-out 0.1s both",
-  },
-  formCard: {
-    background: "linear-gradient(180deg, rgba(15, 23, 42, 0.84) 0%, rgba(15, 23, 42, 0.72) 100%)",
-    borderRadius: "24px",
-    padding: "28px",
-    border: "1px solid rgba(148, 163, 184, 0.18)",
-    boxShadow: "0 24px 70px -18px rgba(2, 6, 23, 0.75), 0 0 0 1px rgba(255,255,255,0.04)",
-    backdropFilter: "blur(18px)",
-    WebkitBackdropFilter: "blur(18px)",
-  },
-  formHeader: {
-    marginBottom: "18px",
-    textAlign: "left",
-  },
-  formEyebrow: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 8,
-    fontSize: "12px",
-    fontWeight: 700,
-    letterSpacing: "0.08em",
-    textTransform: "uppercase",
-    color: "#a5b4fc",
-    marginBottom: "10px",
-  },
-  formTitle: {
-    color: "#f8fafc",
-    fontSize: "28px",
-    lineHeight: 1.1,
-    letterSpacing: "-0.03em",
-    fontWeight: 800,
-    marginBottom: "8px",
-  },
-  formSubtitle: {
-    color: "#94a3b8",
-    fontSize: "14px",
-    lineHeight: 1.6,
-  },
 };
 
 export default Login;

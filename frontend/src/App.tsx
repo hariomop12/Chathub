@@ -10,7 +10,7 @@ import { api, setTokenProvider } from "./api/api";
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
   const { isSignedIn, isLoaded } = useAuth();
-  if (!isLoaded) return <div style={{ color: "#fff", padding: 40 }}>Loading...</div>;
+  if (!isLoaded) return <div className="text-white p-10">Loading...</div>;
   if (!isSignedIn) return <Navigate to="/login" />;
   return children;
 }

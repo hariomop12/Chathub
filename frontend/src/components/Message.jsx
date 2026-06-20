@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import clsx from "clsx";
 import { FileText, X, Image as ImageIcon } from "lucide-react";
 
 const formatSize = (bytes) => {
@@ -24,85 +25,53 @@ const getFileLabel = (type) => {
 };
 
 const FileAttachment = ({ name, size, type, onClick, isOwn }) => {
-  const [hover, setHover] = useState(false);
-
   return (
     <div
       onClick={onClick}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 12,
-        padding: "12px 14px",
-        marginTop: 8,
-        borderRadius: 14,
-        background: hover
-          ? isOwn ? "rgba(255,255,255,0.15)" : "var(--bg-hover)"
-          : isOwn ? "rgba(255,255,255,0.1)" : "var(--bg)",
-        border: `1px solid ${isOwn ? "rgba(255,255,255,0.2)" : "var(--border)"}`,
-        cursor: "pointer",
-        transition: "all 0.2s ease",
-        transform: hover ? "translateY(-1px)" : "translateY(0)",
-      }}
+      className={clsx(
+        "flex items-center gap-3 px-3.5 py-3 mt-2 rounded-[14px] cursor-pointer transition-all duration-200 hover:-translate-y-0.5",
+        isOwn
+          ? "bg-white/10 hover:bg-white/15 border border-white/20"
+          : "bg-bg hover:bg-bg-hover border border-border"
+      )}
     >
       <div
-        style={{
-          width: 42,
-          height: 42,
-          borderRadius: 12,
-          background: isOwn ? "rgba(255,255,255,0.2)" : "var(--primary-bg)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-        }}
+        className={clsx(
+          "w-[42px] h-[42px] rounded-md flex items-center justify-center shrink-0",
+          isOwn ? "bg-white/20" : "bg-primary-bg"
+        )}
       >
-        <FileText size={20} color={isOwn ? "#fff" : "var(--primary-light)"} />
+        <FileText
+          size={20}
+          className={isOwn ? "text-white" : "text-primary-light"}
+        />
       </div>
 
-      <div style={{ flex: 1, minWidth: 0 }}>
+      <div className="flex-1 min-w-0">
         <div
-          style={{
-            fontSize: 14,
-            fontWeight: 600,
-            color: isOwn ? "#fff" : "var(--text)",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
+          className={clsx(
+            "text-sm font-semibold truncate",
+            isOwn ? "text-white" : "text-text"
+          )}
         >
           {name}
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginTop: 4,
-          }}
-        >
+        <div className="flex items-center gap-2 mt-1">
           <span
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              padding: "3px 7px",
-              borderRadius: 999,
-              background: isOwn ? "rgba(255,255,255,0.25)" : "var(--primary-light)",
-              color: "#fff",
-              letterSpacing: 0.4,
-            }}
+            className={clsx(
+              "text-[10px] font-bold px-[7px] py-[3px] rounded-full text-white",
+              isOwn ? "bg-white/25" : "bg-primary-light"
+            )}
           >
             {getFileLabel(type)}
           </span>
 
           <span
-            style={{
-              fontSize: 12,
-              color: isOwn ? "rgba(255,255,255,0.7)" : "var(--text-muted)",
-            }}
+            className={clsx(
+              "text-xs",
+              isOwn ? "text-white/70" : "text-text-muted"
+            )}
           >
             {formatSize(size)}
           </span>
@@ -141,18 +110,7 @@ const Message = ({ message, isOwn }) => {
       {preview && (
         <div
           onClick={closePreview}
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,0.88)",
-            backdropFilter: "blur(10px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 9999,
-            padding: 20,
-            animation: "fadeIn 0.2s ease",
-          }}
+          className="fixed inset-0 bg-black/88 backdrop-blur-md flex items-center justify-center z-[9999] p-5 animate-fade-in"
         >
           {/* CLOSE BUTTON */}
           <button
@@ -161,30 +119,7 @@ const Message = ({ message, isOwn }) => {
               e.stopPropagation();
               closePreview();
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(255,255,255,0.22)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(255,255,255,0.12)";
-            }}
-            style={{
-              position: "absolute",
-              top: 20,
-              right: 20,
-              width: 46,
-              height: 46,
-              borderRadius: "50%",
-              border: "none",
-              background: "rgba(255,255,255,0.12)",
-              color: "#fff",
-              cursor: "pointer",
-              backdropFilter: "blur(8px)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              transition: "all 0.2s ease",
-              zIndex: 10000,
-            }}
+            className="absolute top-5 right-5 w-[46px] h-[46px] rounded-full border-none bg-white/12 text-white cursor-pointer backdrop-blur-sm flex items-center justify-center transition-all duration-200 z-[10000] hover:bg-white/22"
           >
             <X size={22} />
           </button>
@@ -195,13 +130,7 @@ const Message = ({ message, isOwn }) => {
               src={preview}
               alt="Preview"
               onClick={(e) => e.stopPropagation()}
-              style={{
-                maxWidth: "92%",
-                maxHeight: "92%",
-                borderRadius: 16,
-                objectFit: "contain",
-                boxShadow: "0 10px 40px rgba(0,0,0,0.5)",
-              }}
+              className="max-w-[92%] max-h-[92%] rounded-lg object-contain shadow-[0_10px_40px_rgba(0,0,0,0.5)]"
             />
           )}
 
@@ -209,23 +138,12 @@ const Message = ({ message, isOwn }) => {
           {previewType === "pdf" && (
             <div
               onClick={(e) => e.stopPropagation()}
-              style={{
-                width: "92%",
-                height: "92%",
-                borderRadius: 18,
-                overflow: "hidden",
-                background: "#fff",
-                boxShadow: "0 10px 40px rgba(0,0,0,0.4)",
-              }}
+              className="w-[92%] h-[92%] rounded-[18px] overflow-hidden bg-white shadow-[0_10px_40px_rgba(0,0,0,0.4)]"
             >
               <iframe
                 src={preview}
                 title="PDF Preview"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  border: "none",
-                }}
+                className="w-full h-full border-none"
               />
             </div>
           )}
@@ -234,41 +152,26 @@ const Message = ({ message, isOwn }) => {
 
       {/* MESSAGE */}
       <div
-        style={{
-          display: "flex",
-          flexDirection: isOwn ? "row-reverse" : "row",
-          alignItems: "flex-end",
-          gap: 10,
-          marginBottom: 16,
-        }}
+        className={clsx(
+          "flex items-end gap-2.5 mb-4",
+          isOwn ? "flex-row-reverse" : "flex-row"
+        )}
       >
         {/* AVATAR */}
         <img
           src={message.avatar}
           alt=""
-          style={{
-            width: 34,
-            height: 34,
-            borderRadius: "50%",
-            objectFit: "cover",
-            border: "2px solid var(--border)",
-            flexShrink: 0,
-          }}
+          className="w-[34px] h-[34px] rounded-full object-cover border-2 border-border shrink-0"
         />
 
         {/* MESSAGE BOX */}
         <div
-          className="message-bubble"
-          style={{
-            maxWidth: "72%",
-            padding: "12px 16px",
-            borderRadius: 20,
-            background: isOwn ? "var(--gradient-primary)" : "var(--msg-other)",
-            color: isOwn ? "#fff" : "var(--text)",
-            borderBottomRightRadius: isOwn ? 6 : 20,
-            borderBottomLeftRadius: isOwn ? 20 : 6,
-            boxShadow: isOwn ? "0 2px 8px rgba(79, 70, 229, 0.2)" : "0 2px 6px rgba(0,0,0,0.04)",
-          }}
+          className={clsx(
+            "message-bubble max-w-[72%] px-4 py-3 rounded-[20px]",
+            isOwn
+              ? "bg-gradient-to-br from-primary to-primary-light text-white rounded-br-[6px] shadow-[0_2px_8px_rgba(79,70,229,0.2)]"
+              : "bg-msg-other text-text rounded-bl-[6px] shadow-[0_2px_6px_rgba(0,0,0,0.04)]"
+          )}
         >
           {/* IMAGE */}
           {message.file_url && message.file_type?.startsWith("image/") ? (
@@ -278,34 +181,21 @@ const Message = ({ message, isOwn }) => {
                   setPreview(message.file_url);
                   setPreviewType("image");
                 }}
-                style={{
-                  overflow: "hidden",
-                  borderRadius: 14,
-                  cursor: "pointer",
-                }}
+                className="overflow-hidden rounded-[14px] cursor-pointer"
               >
                 <img
                   src={message.file_url}
                   alt={message.file_name || "Image"}
-                  style={{
-                    maxWidth: "100%",
-                    maxHeight: 320,
-                    display: "block",
-                    transition: "transform 0.2s ease",
-                  }}
+                  className="max-w-full max-h-[320px] block transition-transform duration-200"
                 />
               </div>
 
               {message.file_name && (
                 <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    marginTop: 8,
-                    fontSize: 12,
-                    color: isOwn ? "rgba(255,255,255,0.7)" : "var(--text-muted)",
-                  }}
+                  className={clsx(
+                    "flex items-center gap-1.5 mt-2 text-xs",
+                    isOwn ? "text-white/70" : "text-text-muted"
+                  )}
                 >
                   <ImageIcon size={14} />
 
@@ -338,12 +228,10 @@ const Message = ({ message, isOwn }) => {
           {/* TEXT */}
           {message.content && (
             <p
-              style={{
-                margin: message.file_url ? "10px 0 0" : 0,
-                fontSize: 15,
-                lineHeight: 1.6,
-                wordBreak: "break-word",
-              }}
+              className={clsx(
+                "text-base leading-relaxed break-words",
+                message.file_url ? "mt-2.5" : "m-0"
+              )}
             >
               {message.content}
             </p>

@@ -40,7 +40,7 @@ const Chat = () => {
     userIdRef.current = user?.id || null;
   }, [user?.id]);
 
-  if (!isLoaded) return <div style={{display:"flex",height:"100dvh",alignItems:"center",justifyContent:"center",background:"var(--bg)",color:"var(--text-muted)",fontSize:18}}>Loading...</div>;
+  if (!isLoaded) return <div className="flex h-dvh items-center justify-center bg-bg text-text-muted text-lg">Loading...</div>;
 
   const getMediaStream = async (video) => {
     try {
@@ -512,14 +512,7 @@ const Chat = () => {
 
   return (
     <div
-      className={`chat-layout ${activeChat ? "has-active-chat" : ""}`}
-      style={{
-        display: "flex",
-        height: "100dvh",
-        background: "var(--bg)",
-        color: "var(--text)",
-        overflow: "hidden",
-      }}
+      className={`chat-layout flex h-dvh bg-bg text-text overflow-hidden ${activeChat ? "has-active-chat" : ""}`}
     >
       <Sidebar
         chats={chats}

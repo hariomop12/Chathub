@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { useState, useEffect } from "react";
 import Cropper from "react-easy-crop";
 import { Settings, Sun, Moon, X } from "lucide-react";
@@ -191,66 +192,25 @@ const Sidebar = ({
 
   return (
     <div
-      className="chat-sidebar"
-      style={{
-        width: 320,
-        background: "var(--bg-sidebar)",
-        display: "flex",
-        flexDirection: "column",
-        borderRight: "1px solid var(--border)",
-        color: "var(--text)",
-      }}
+      className="chat-sidebar w-[320px] bg-bg-sidebar flex flex-col border-r border-border text-text"
     >
       {/* Header */}
-      <div
-        style={{
-          padding: "20px 20px 16px",
-          borderBottom: "1px solid var(--border)",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{
-            width: 32, height: 32, borderRadius: 10,
-            background: "var(--gradient-primary)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            color: "#fff", fontSize: 16,
-          }}>
+      <div className="px-5 pt-5 pb-4 border-b border-border">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-[10px] bg-gradient-to-br from-primary to-primary-light flex items-center justify-center text-white text-base">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
-          <h2
-            style={{
-              margin: 0,
-              fontSize: 18,
-              fontWeight: 700,
-              color: "var(--text)",
-            }}
-          >
+          <h2 className="m-0 text-lg font-bold text-text">
             Messages
           </h2>
         </div>
       </div>
 
-      {/* Users */}
-      <div
-        style={{
-          padding: "16px 20px 8px",
-          fontSize: 11,
-          fontWeight: 700,
-          color: "var(--text-muted)",
-          letterSpacing: "0.8px",
-          textTransform: "uppercase",
-        }}
-      >
+      <div className="px-5 pt-4 pb-2 text-xs font-bold text-text-muted tracking-wider uppercase">
         All Users
       </div>
 
-      <div
-        style={{
-          maxHeight: 220,
-          overflowY: "auto",
-          padding: "0 10px",
-        }}
-      >
+      <div className="max-h-[220px] overflow-y-auto px-2.5">
         {Array.isArray(users) &&
           users
             .filter((u) => u.id !== user?.id)
@@ -258,53 +218,20 @@ const Sidebar = ({
             <div
               key={u.id}
               onClick={() => startChat(u)}
-              style={{
-                padding: "10px 12px",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                borderRadius: 10,
-                marginBottom: 6,
-                transition: "0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "var(--bg-hover)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "transparent";
-              }}
+              className="px-3 py-2.5 cursor-pointer flex items-center gap-3 rounded-[10px] mb-1.5 transition-all duration-200 hover:bg-bg-hover"
             >
               <img
                 src={u.avatar}
                 alt=""
-                style={{
-                  width: 42,
-                  height: 42,
-                  borderRadius: "50%",
-                  border: "2px solid var(--border)",
-                  objectFit: "cover",
-                }}
+                className="w-[42px] h-[42px] rounded-full border-2 border-border object-cover"
               />
 
-              <div style={{ minWidth: 0 }}>
-                <div
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                  }}
-                >
+              <div className="min-w-0">
+                <div className="text-sm font-semibold">
                   {u.username}
                 </div>
 
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "var(--text-muted)",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
+                <div className="text-xs text-text-muted overflow-hidden truncate">
                   {u.email}
                 </div>
               </div>
@@ -312,36 +239,14 @@ const Sidebar = ({
           ))}
       </div>
 
-      {/* Chats */}
-      <div
-        style={{
-          padding: "16px 20px 8px",
-          fontSize: 11,
-          fontWeight: 700,
-          color: "var(--text-muted)",
-          letterSpacing: "0.8px",
-          textTransform: "uppercase",
-        }}
-      >
+      <div className="px-5 pt-4 pb-2 text-xs font-bold text-text-muted tracking-wider uppercase">
         Your Chats
       </div>
 
-      <div
-        style={{
-          flex: 1,
-          overflowY: "auto",
-          padding: "0 10px",
-        }}
-      >
+      <div className="flex-1 overflow-y-auto px-2.5">
         {!Array.isArray(chats) || chats.length === 0 ? (
           <p
-            className="empty-chat-copy"
-            style={{
-              padding: 20,
-              color: "var(--text-muted)",
-              textAlign: "center",
-              fontSize: 14,
-            }}
+            className="empty-chat-copy p-5 text-text-muted text-center text-sm"
           >
             Start chatting with someone 👋
           </p>
@@ -350,81 +255,31 @@ const Sidebar = ({
             <div
               key={chat.id}
               onClick={() => onSelectChat(chat)}
-              style={{
-                padding: "12px",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 12,
-                borderRadius: "var(--radius-md)",
-                marginBottom: 6,
-                background:
-                  activeChat?.id === chat.id ? "var(--bg-active)" : "transparent",
-                transition: "all 0.15s ease",
-                boxShadow: activeChat?.id === chat.id ? "var(--shadow-sm)" : "none",
-              }}
-              onMouseEnter={(e) => {
-                if (activeChat?.id !== chat.id) {
-                  e.currentTarget.style.background = "var(--bg-hover)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (activeChat?.id !== chat.id) {
-                  e.currentTarget.style.background = "transparent";
-                }
-              }}
+              className={clsx(
+                "p-3 cursor-pointer flex items-center justify-between gap-3 rounded-md mb-1.5 transition-all duration-150 hover:bg-bg-hover",
+                activeChat?.id === chat.id && "bg-bg-active shadow-sm",
+              )}
             >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  minWidth: 0,
-                  flex: 1,
-                }}
-              >
+              <div className="flex items-center gap-3 min-w-0 flex-1">
                 {chat.other_avatar && (
                   <img
                     src={chat.other_avatar}
                     alt=""
-                    style={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                      border: "2px solid var(--border)",
-                    }}
+                    className="w-[44px] h-[44px] rounded-full object-cover border-2 border-border"
                   />
                 )}
 
-                <div
-                  style={{
-                    minWidth: 0,
-                    flex: 1,
-                  }}
-                >
-                  <div
-                    style={{
-                      fontWeight: 600,
-                      fontSize: 14,
-                    }}
-                  >
+                <div className="min-w-0 flex-1">
+                  <div className="font-semibold text-sm">
                     {chat.other_username || chat.name || "Direct Chat"}
                   </div>
 
                   {chat.last_message && (
                     <p
-                      style={{
-                        margin: "4px 0 0",
-                        fontSize: 12,
-                        color:
-                          activeChat?.id === chat.id ? "var(--primary-light)" : "var(--text-muted)",
-
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                      }}
+                      className={clsx(
+                        "mt-1 text-xs overflow-hidden whitespace-nowrap truncate",
+                        activeChat?.id === chat.id ? "text-primary-light" : "text-text-muted",
+                      )}
                     >
                       {chat.last_message}
                     </p>
@@ -437,20 +292,7 @@ const Sidebar = ({
                   type="button"
                   onClick={(e) => deleteChat(e, chat.id)}
                   title="Delete chat"
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: 8,
-                    border: "none",
-                    background: "var(--call-red)",
-                    color: "#fff",
-                    cursor: "pointer",
-                    fontSize: 14,
-                    transition: "0.2s",
-                    opacity: 0.7,
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.opacity = "1"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.opacity = "0.7"; }}
+                  className="w-8 h-8 rounded-[8px] border-none bg-call-red text-white cursor-pointer text-sm transition-all duration-200 opacity-70 hover:opacity-100 shrink-0"
                 >
                   ✕
                 </button>
@@ -461,128 +303,63 @@ const Sidebar = ({
       </div>
 
       {/* Bottom User Section */}
-      <div
-        style={{
-          padding: "14px 18px",
-          borderTop: "1px solid var(--border)",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          background: "var(--bg-card)",
-        }}
-      >
+      <div className="px-[18px] py-[14px] border-t border-border flex items-center gap-3 bg-bg-card">
         <img
           src={user?.imageUrl}
           alt=""
-          style={{
-            width: 42,
-            height: 42,
-            borderRadius: "50%",
-            objectFit: "cover",
-          }}
+          className="w-[42px] h-[42px] rounded-full object-cover"
         />
 
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div
-            style={{
-              fontSize: 14,
-              fontWeight: 600,
-            }}
-          >
+        <div className="flex-1 min-w-0">
+          <div className="text-sm font-semibold">
             {user?.fullName || user?.username}
           </div>
 
-          <div
-            style={{
-              fontSize: 12,
-              color: "var(--text-muted)",
-            }}
-          >
+          <div className="text-xs text-text-muted">
             Online
           </div>
         </div>
 
-        {/* Settings */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={toggleTheme}
             title={theme === "light" ? "Dark mode" : "Light mode"}
             aria-label="Toggle theme"
+            className="w-9 h-9 border-none rounded-[8px] cursor-pointer flex items-center justify-center transition-all duration-200 relative overflow-hidden hover:scale-105"
             style={{
-              width: 36,
-              height: 36,
-              border: "none",
-              borderRadius: 8,
               background: theme === "light" ? "#f1f5f9" : "#334155",
               color: theme === "light" ? "#f59e0b" : "#fbbf24",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              transition: "all 0.2s",
-              position: "relative",
-              overflow: "hidden",
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = theme === "light" ? "#e2e8f0" : "#475569";
-              e.currentTarget.style.transform = "scale(1.08)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = theme === "light" ? "#f1f5f9" : "#334155";
-              e.currentTarget.style.transform = "scale(1)";
             }}
           >
-            <div style={{
+            <div className="absolute" style={{
               transition: "transform 0.4s ease, opacity 0.3s ease",
               transform: theme === "light" ? "rotate(0deg) scale(1)" : "rotate(180deg) scale(0)",
               opacity: theme === "light" ? 1 : 0,
-              position: "absolute",
             }}>
               <Sun size={18} strokeWidth={2.2} />
             </div>
-            <div style={{
+            <div className="absolute" style={{
               transition: "transform 0.4s ease, opacity 0.3s ease",
               transform: theme === "dark" ? "rotate(0deg) scale(1)" : "rotate(-180deg) scale(0)",
               opacity: theme === "dark" ? 1 : 0,
-              position: "absolute",
             }}>
               <Moon size={18} strokeWidth={2.2} />
             </div>
           </button>
-          <button type="button" onClick={() => clerk.signOut()} title="Sign out" style={{width:36,height:36,borderRadius:8,border:"1px solid var(--border)",background:"var(--bg-card)",cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center",color:"var(--call-red)"}}>✕</button>
+          <button type="button" onClick={() => clerk.signOut()} title="Sign out" className="w-9 h-9 rounded-[8px] border border-border bg-bg-card cursor-pointer text-base flex items-center justify-center text-call-red shrink-0">✕</button>
           <button
             type="button"
             onClick={() => setIsSettingsOpen(true)}
             title="Settings"
             aria-label="Open settings"
-            style={{
-              width: 36,
-              height: 36,
-              border: "none",
-              borderRadius: 8,
-              background: "var(--bg-hover)",
-              color: "var(--text-secondary)",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              transition: "0.2s",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "var(--border)";
-              e.currentTarget.style.color = "var(--text)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "var(--bg-hover)";
-              e.currentTarget.style.color = "var(--text-secondary)";
-            }}
+            className="w-9 h-9 border-none rounded-[8px] bg-bg-hover text-text-secondary cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-border hover:text-text"
           >
             <Settings size={18} strokeWidth={2.2} />
           </button>
@@ -595,32 +372,32 @@ const Sidebar = ({
           aria-modal="true"
           aria-label="User Settings"
           onClick={closeSettings}
-          style={overlayStyle}
+          className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[1000] backdrop-blur-sm"
         >
-          <div onClick={(e) => e.stopPropagation()} style={modalStyle}>
+          <div onClick={(e) => e.stopPropagation()} className="w-full max-w-[460px] max-h-[90vh] overflow-y-auto bg-bg-card rounded-lg shadow-[0_30px_80px_rgba(0,0,0,0.3)] animate-slide-up">
             {/* HEADER */}
-            <div style={headerStyle}>
+            <div className="px-5 py-[18px] border-b border-border flex justify-between items-center">
               <div>
-                <h3 style={titleStyle}>Profile settings</h3>
-                <p style={subText}>Update your profile details</p>
+                <h3 className="m-0 text-base font-bold text-text">Profile settings</h3>
+                <p className="mt-1 text-sm text-text-secondary">Update your profile details</p>
               </div>
 
               <button
                 onClick={closeSettings}
                 disabled={isUploading}
-                style={iconBtn}
+                className="w-[34px] h-[34px] rounded-sm border border-border bg-bg-card text-text-muted cursor-pointer text-base shrink-0"
               >
                 ✕
               </button>
             </div>
 
             {/* BODY */}
-            <div style={bodyStyle}>
+            <div className="p-5 flex flex-col gap-3.5">
               {/* Avatar */}
-              <div style={avatarSection}>
-                <img src={user?.imageUrl} style={avatar} alt="avatar" />
+              <div className="flex items-center gap-3.5">
+                <img src={user?.imageUrl} className="w-[74px] h-[74px] rounded-full object-cover border-[3px] border-border" alt="avatar" />
 
-                <label style={uploadBtn}>
+                <label className="px-3.5 py-2.5 rounded-[10px] border border-border bg-bg text-text text-sm font-semibold cursor-pointer">
                   Change photo
                   <input
                     type="file"
@@ -636,15 +413,15 @@ const Sidebar = ({
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 placeholder="Your name"
-                style={input}
+                className="w-full px-3 py-[11px] rounded-[10px] border border-border bg-bg text-text outline-none text-sm"
               />
 
               {/* Crop */}
               {selectedImage && (
-                <div style={cropSection}>
-                  <p style={sectionTitle}>Adjust image</p>
+                <div className="flex flex-col gap-2.5">
+                  <p className="m-0 text-sm font-bold text-text">Adjust image</p>
 
-                  <div style={cropBox}>
+                  <div className="w-full h-[260px] rounded-md overflow-hidden bg-text">
                     <Cropper
                       image={selectedImage}
                       crop={crop}
@@ -667,7 +444,7 @@ const Sidebar = ({
                     step={0.01}
                     value={zoom}
                     onChange={(e) => setZoom(Number(e.target.value))}
-                    style={rangeStyle}
+                    className="w-full"
                   />
 
                   <button
@@ -676,22 +453,22 @@ const Sidebar = ({
                       setSelectedImage(null);
                       setZoom(1);
                     }}
-                    style={dangerLink}
+                    className="self-start border-none bg-transparent text-call-red text-sm font-semibold cursor-pointer"
                   >
                     Remove selected image
                   </button>
                 </div>
               )}
 
-              {uploadError && <p style={errorText}>{uploadError}</p>}
+              {uploadError && <p className="m-0 text-call-red text-sm">{uploadError}</p>}
             </div>
 
             {/* FOOTER */}
-            <div style={footerStyle}>
+            <div className="px-5 py-[14px] border-t border-border flex justify-end gap-2.5">
               <button
                 onClick={closeSettings}
                 disabled={isUploading}
-                style={secondaryBtn}
+                className="px-3.5 py-[9px] rounded-[10px] border border-border bg-bg-card text-text font-semibold cursor-pointer"
               >
                 Cancel
               </button>
@@ -699,11 +476,10 @@ const Sidebar = ({
               <button
                 onClick={saveUserSettings}
                 disabled={!canSaveSettings}
-                style={{
-                  ...primaryBtn,
-                  opacity: !canSaveSettings ? 0.5 : 1,
-                  cursor: !canSaveSettings ? "not-allowed" : "pointer",
-                }}
+                className={clsx(
+                  "px-3.5 py-[9px] rounded-[10px] border-none bg-primary text-white font-bold cursor-pointer shadow-[0_4px_12px_rgba(79,70,229,0.3)]",
+                  !canSaveSettings && "opacity-50 cursor-not-allowed",
+                )}
               >
                 {isUploading ? "Saving..." : "Save changes"}
               </button>
@@ -713,173 +489,6 @@ const Sidebar = ({
       )}
     </div>
   );
-};
-
-const overlayStyle = {
-  position: "fixed",
-  inset: 0,
-  background: "rgba(0, 0, 0, 0.6)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  padding: 16,
-  zIndex: 1000,
-  backdropFilter: "blur(8px)",
-};
-
-const modalStyle = {
-  width: "min(460px, 100%)",
-  maxHeight: "90vh",
-  overflowY: "auto",
-  background: "var(--bg-card)",
-  borderRadius: "var(--radius-lg)",
-  boxShadow: "0 30px 80px rgba(0,0,0,0.3)",
-  animation: "slideUp 0.3s ease-out",
-};
-
-const headerStyle = {
-  padding: "18px 20px",
-  borderBottom: "1px solid var(--border)",
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-};
-
-const titleStyle = {
-  margin: 0,
-  fontSize: 16,
-  fontWeight: 700,
-  color: "var(--text)",
-};
-
-const subText = {
-  margin: "4px 0 0",
-  fontSize: 13,
-  color: "var(--text-secondary)",
-};
-
-const iconBtn = {
-  width: 34,
-  height: 34,
-  borderRadius: "var(--radius-sm)",
-  border: "1px solid var(--border)",
-  background: "var(--bg-card)",
-  color: "var(--text-muted)",
-  cursor: "pointer",
-  fontSize: 16,
-};
-
-const bodyStyle = {
-  padding: 20,
-  display: "flex",
-  flexDirection: "column",
-  gap: 14,
-};
-
-const avatarSection = {
-  display: "flex",
-  alignItems: "center",
-  gap: 14,
-};
-
-const avatar = {
-  width: 74,
-  height: 74,
-  borderRadius: "50%",
-  objectFit: "cover",
-  border: "3px solid var(--border)",
-};
-
-const uploadBtn = {
-  padding: "10px 14px",
-  borderRadius: 10,
-  border: "1px solid var(--border)",
-  background: "var(--bg)",
-  color: "var(--text)",
-  fontSize: 13,
-  fontWeight: 600,
-  cursor: "pointer",
-};
-
-const input = {
-  width: "100%",
-  padding: "11px 12px",
-  borderRadius: 10,
-  border: "1px solid var(--border)",
-  background: "var(--bg)",
-  color: "var(--text)",
-  outline: "none",
-  fontSize: 14,
-};
-
-const cropSection = {
-  display: "flex",
-  flexDirection: "column",
-  gap: 10,
-};
-
-const sectionTitle = {
-  margin: 0,
-  fontSize: 13,
-  fontWeight: 700,
-  color: "var(--text)",
-};
-
-const cropBox = {
-  width: "100%",
-  height: 260,
-  borderRadius: "var(--radius-md)",
-  overflow: "hidden",
-  background: "var(--text)",
-};
-
-const rangeStyle = {
-  width: "100%",
-};
-
-const dangerLink = {
-  alignSelf: "flex-start",
-  border: "none",
-  background: "transparent",
-  color: "var(--call-red)",
-  fontSize: 13,
-  fontWeight: 600,
-  cursor: "pointer",
-};
-
-const errorText = {
-  margin: 0,
-  color: "var(--call-red)",
-  fontSize: 13,
-};
-
-const footerStyle = {
-  padding: "14px 20px",
-  borderTop: "1px solid var(--border)",
-  display: "flex",
-  justifyContent: "flex-end",
-  gap: 10,
-};
-
-const secondaryBtn = {
-  padding: "9px 14px",
-  borderRadius: 10,
-  border: "1px solid var(--border)",
-  background: "var(--bg-card)",
-  color: "var(--text)",
-  fontWeight: 600,
-  cursor: "pointer",
-};
-
-const primaryBtn = {
-  padding: "9px 14px",
-  borderRadius: 10,
-  border: "none",
-  background: "var(--primary)",
-  color: "#fff",
-  fontWeight: 700,
-  cursor: "pointer",
-  boxShadow: "0 4px 12px rgba(79, 70, 229, 0.3)",
 };
 
 export default Sidebar;

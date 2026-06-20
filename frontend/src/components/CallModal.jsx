@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import clsx from "clsx";
 import { Phone, PhoneOff, Video, VideoOff, X } from "lucide-react";
 
 const CallModal = ({
@@ -30,73 +31,25 @@ const CallModal = ({
   if (!callState || callState === "idle") return null;
 
   return (
-    <div
-      className="call-modal-overlay"
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 9999,
-        background: "rgba(15, 23, 42, 0.92)",
-        backdropFilter: "blur(12px)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <div
-        className="call-modal"
-        style={{
-          width: "100%",
-          maxWidth: 420,
-          background: "linear-gradient(180deg, #1e293b 0%, #0f172a 100%)",
-          borderRadius: 24,
-          padding: 36,
-          textAlign: "center",
-          color: "#fff",
-          position: "relative",
-          boxShadow: "0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(79, 70, 229, 0.15)",
-          border: "1px solid rgba(255,255,255,0.06)",
-        }}
-      >
+    <div className="call-modal-overlay fixed inset-0 z-[9999] bg-[rgba(15,23,42,0.92)] backdrop-blur-md flex items-center justify-center">
+      <div className="call-modal w-full max-w-[420px] bg-gradient-to-b from-[#1e293b] to-[#0f172a] rounded-2xl p-9 text-center text-white relative shadow-[0_20px_60px_rgba(0,0,0,0.6),_0_0_40px_rgba(79,70,229,0.15)] border border-white/6">
         {/* Avatar / Name */}
-        <div style={{ marginBottom: 24 }}>
+        <div className="mb-6">
           {callerInfo?.avatar ? (
             <img
               src={callerInfo.avatar}
               alt=""
-              style={{
-                width: 88,
-                height: 88,
-                borderRadius: "50%",
-                border: "3px solid rgba(99, 102, 241, 0.5)",
-                objectFit: "cover",
-                marginBottom: 12,
-                boxShadow: "0 0 30px rgba(99, 102, 241, 0.2)",
-              }}
+              className="w-[88px] h-[88px] rounded-full border-[3px] border-primary-light/50 object-cover mb-3 shadow-[0_0_30px_rgba(99,102,241,0.2)] mx-auto"
             />
           ) : (
-            <div
-              style={{
-                width: 88,
-                height: 88,
-                borderRadius: "50%",
-                background: "linear-gradient(135deg, #4f46e5, #6366f1)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 36,
-                fontWeight: 700,
-                margin: "0 auto 12px",
-                boxShadow: "0 0 30px rgba(99, 102, 241, 0.3)",
-              }}
-            >
+            <div className="w-[88px] h-[88px] rounded-full bg-gradient-to-br from-primary to-primary-light flex items-center justify-center text-4xl font-bold mx-auto mb-3 shadow-[0_0_30px_rgba(99,102,241,0.3)]">
               {callerInfo?.username?.[0]?.toUpperCase() || "?"}
             </div>
           )}
-          <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 4, letterSpacing: "-0.3px" }}>
+          <h2 className="text-2xl font-bold mb-1 tracking-tight">
             {callerInfo?.username || "Unknown"}
           </h2>
-          <p style={{ color: "var(--text-muted)", fontSize: 14 }}>
+          <p className="text-text-muted text-sm">
             {callState === "incoming"
               ? isVideo
                 ? "Incoming video call..."
@@ -113,46 +66,22 @@ const CallModal = ({
 
         {/* Remote video (active call) */}
         {callState === "connected" && remoteStream && (
-          <div
-            style={{
-              position: "relative",
-              width: "100%",
-              aspectRatio: "4/3",
-              borderRadius: 16,
-              overflow: "hidden",
-              background: "#000",
-              marginBottom: 16,
-              border: "1px solid rgba(255,255,255,0.06)",
-            }}
-          >
+          <div className="relative w-full aspect-[4/3] rounded-lg overflow-hidden bg-black mb-4 border border-white/6">
             <video
               ref={remoteVideoRef}
               autoPlay
               playsInline
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              className="w-full h-full object-cover"
             />
             {/* Local PIP */}
             {localStream && (
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: 12,
-                  right: 12,
-                  width: "30%",
-                  aspectRatio: "1",
-                  borderRadius: 10,
-                  overflow: "hidden",
-                  border: "2px solid rgba(255,255,255,0.2)",
-                  background: "#000",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.4)",
-                }}
-              >
+              <div className="absolute bottom-3 right-3 w-[30%] aspect-square rounded-[10px] overflow-hidden border-2 border-white/20 bg-black shadow-[0_4px_12px_rgba(0,0,0,0.4)]">
                 <video
                   ref={localVideoRef}
                   autoPlay
                   playsInline
                   muted
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  className="w-full h-full object-cover"
                 />
               </div>
             )}
@@ -161,30 +90,13 @@ const CallModal = ({
 
         {/* Audio-only animation */}
         {callState === "connected" && !isVideo && (
-          <div
-            style={{
-              width: "100%",
-              height: 80,
-              borderRadius: 16,
-              background: "rgba(99,102,241,0.08)",
-              marginBottom: 16,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 4,
-              border: "1px solid rgba(255,255,255,0.04)",
-            }}
-          >
+          <div className="w-full h-20 rounded-lg bg-primary-light/8 mb-4 flex items-center justify-center gap-1 border border-white/4">
             {[1, 2, 3, 4, 5].map((i) => (
               <div
                 key={i}
-                className="audio-bar"
+                className="audio-bar w-[6px] bg-gradient-to-t from-primary to-primary-light rounded-[3px] animate-audio-bounce"
                 style={{
-                  width: 6,
                   height: 30 + Math.random() * 30,
-                  background: "linear-gradient(to top, #4f46e5, #818cf8)",
-                  borderRadius: 3,
-                  animation: "audioBounce 0.8s ease-in-out infinite",
                   animationDelay: `${i * 0.1}s`,
                 }}
               />
@@ -194,54 +106,22 @@ const CallModal = ({
 
         {/* Buttons */}
         <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: 20,
-            marginTop: callState === "connected" ? 0 : 8,
-          }}
+          className={clsx(
+            "flex justify-center gap-5",
+            callState === "connected" ? "mt-0" : "mt-2"
+          )}
         >
           {callState === "incoming" && (
             <>
               <button
                 onClick={onReject}
-                style={{
-                  width: 64,
-                  height: 64,
-                  borderRadius: "50%",
-                  border: "none",
-                  background: "linear-gradient(135deg, #ef4444, #dc2626)",
-                  color: "#fff",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transition: "all 0.2s",
-                  boxShadow: "0 6px 20px rgba(239, 68, 68, 0.4)",
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.05)"; e.currentTarget.style.boxShadow = "0 8px 28px rgba(239, 68, 68, 0.5)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(239, 68, 68, 0.4)"; }}
+                className="w-16 h-16 rounded-full border-none bg-gradient-to-br from-call-red to-red-600 text-white cursor-pointer flex items-center justify-center transition-all duration-200 shadow-[0_6px_20px_rgba(239,68,68,0.4)] hover:scale-105 hover:shadow-[0_8px_28px_rgba(239,68,68,0.5)]"
               >
                 <PhoneOff size={26} />
               </button>
               <button
                 onClick={onAnswer}
-                style={{
-                  width: 64,
-                  height: 64,
-                  borderRadius: "50%",
-                  border: "none",
-                  background: "linear-gradient(135deg, #22c55e, #16a34a)",
-                  color: "#fff",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transition: "all 0.2s",
-                  boxShadow: "0 6px 20px rgba(34, 197, 94, 0.4)",
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.05)"; e.currentTarget.style.boxShadow = "0 8px 28px rgba(34, 197, 94, 0.5)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(34, 197, 94, 0.4)"; }}
+                className="w-16 h-16 rounded-full border-none bg-gradient-to-br from-call-green to-green-600 text-white cursor-pointer flex items-center justify-center transition-all duration-200 shadow-[0_6px_20px_rgba(34,197,94,0.4)] hover:scale-105 hover:shadow-[0_8px_28px_rgba(34,197,94,0.5)]"
               >
                 {isVideo ? <Video size={26} /> : <Phone size={26} />}
               </button>
@@ -251,22 +131,7 @@ const CallModal = ({
           {callState === "calling" && (
             <button
               onClick={onCancelCall}
-              style={{
-                width: 64,
-                height: 64,
-                borderRadius: "50%",
-                border: "none",
-                background: "linear-gradient(135deg, #ef4444, #dc2626)",
-                color: "#fff",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                transition: "all 0.2s",
-                boxShadow: "0 6px 20px rgba(239, 68, 68, 0.4)",
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.05)"; e.currentTarget.style.boxShadow = "0 8px 28px rgba(239, 68, 68, 0.5)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(239, 68, 68, 0.4)"; }}
+              className="w-16 h-16 rounded-full border-none bg-gradient-to-br from-call-red to-red-600 text-white cursor-pointer flex items-center justify-center transition-all duration-200 shadow-[0_6px_20px_rgba(239,68,68,0.4)] hover:scale-105 hover:shadow-[0_8px_28px_rgba(239,68,68,0.5)]"
             >
               <PhoneOff size={26} />
             </button>
@@ -275,22 +140,7 @@ const CallModal = ({
           {callState === "connected" && (
             <button
               onClick={onEndCall}
-              style={{
-                width: 64,
-                height: 64,
-                borderRadius: "50%",
-                border: "none",
-                background: "linear-gradient(135deg, #ef4444, #dc2626)",
-                color: "#fff",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                transition: "all 0.2s",
-                boxShadow: "0 6px 20px rgba(239, 68, 68, 0.4)",
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.05)"; e.currentTarget.style.boxShadow = "0 8px 28px rgba(239, 68, 68, 0.5)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 6px 20px rgba(239, 68, 68, 0.4)"; }}
+              className="w-16 h-16 rounded-full border-none bg-gradient-to-br from-call-red to-red-600 text-white cursor-pointer flex items-center justify-center transition-all duration-200 shadow-[0_6px_20px_rgba(239,68,68,0.4)] hover:scale-105 hover:shadow-[0_8px_28px_rgba(239,68,68,0.5)]"
             >
               <PhoneOff size={26} />
             </button>
